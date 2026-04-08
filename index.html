@@ -1,0 +1,3502 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Window — NY Open Trading System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C8A84B;
+  --gold2: #E4C97E;
+  --gold-dim: rgba(200,168,75,0.15);
+  --bg: #080808;
+  --bg2: #0F0F0F;
+  --bg3: #161616;
+  --bg4: #1C1C1C;
+  --border: #232323;
+  --border2: #2C2C2C;
+  --text: #EBEBEB;
+  --text2: #AAAAAA;
+  --text3: #666;
+  --green: #3DBA78;
+  --green-dim: rgba(61,186,120,0.1);
+  --red: #E05252;
+  --red-dim: rgba(224,82,82,0.1);
+  --blue: #5B9CF6;
+  --blue-dim: rgba(91,156,246,0.1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* COVER PAGE */
+.cover {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+padding: 0 0 80px 0;
+position: relative;
+overflow: hidden;
+background: #060606;
+}
+.cover-grid {
+position: absolute;
+inset: 0;
+background-image:
+linear-gradient(rgba(200,168,75,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(200,168,75,0.04) 1px, transparent 1px);
+background-size: 60px 60px;
+}
+.cover-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 50% 100%, transparent 30%, #060606 75%);
+}
+.cover-corner {
+position: absolute;
+top: 48px; right: 48px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–text3);
+text-transform: uppercase;
+}
+.cover-number {
+position: absolute;
+bottom: 32px; right: 64px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–text3);
+}
+.cover-content {
+position: relative;
+z-index: 1;
+padding: 0 64px;
+}
+.cover-eyebrow {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–gold);
+text-transform: uppercase;
+margin-bottom: 28px;
+display: flex;
+align-items: center;
+gap: 16px;
+}
+.cover-eyebrow::before {
+content: ‘’;
+width: 40px;
+height: 1px;
+background: var(–gold);
+}
+.cover-title {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(72px, 11vw, 160px);
+font-weight: 900;
+line-height: 0.88;
+letter-spacing: -2px;
+margin-bottom: 12px;
+}
+.cover-title .accent { color: var(–gold); font-style: italic; }
+.cover-subtitle {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(28px, 4vw, 56px);
+font-weight: 400;
+font-style: italic;
+color: var(–text2);
+line-height: 1.1;
+margin-bottom: 48px;
+}
+.cover-desc {
+max-width: 560px;
+font-size: 15px;
+color: var(–text2);
+font-weight: 400;
+line-height: 1.8;
+margin-bottom: 56px;
+border-left: 1px solid var(–gold);
+padding-left: 24px;
+}
+.cover-stats {
+display: flex;
+gap: 48px;
+flex-wrap: wrap;
+}
+.cover-stat-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–text3);
+margin-bottom: 6px;
+}
+.cover-stat-value {
+font-family: ‘Playfair Display’, serif;
+font-size: 22px;
+font-weight: 700;
+color: var(–gold);
+}
+
+/* NAVIGATION / TOC */
+.page {
+max-width: 960px;
+margin: 0 auto;
+padding: 100px 48px;
+}
+.page + .page { border-top: 1px solid var(–border); }
+
+.section-tag {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–gold);
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 56px;
+}
+.section-tag::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+.page-title {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(40px, 6vw, 72px);
+font-weight: 900;
+line-height: 1;
+margin-bottom: 16px;
+}
+.page-subtitle {
+font-size: 16px;
+color: var(–text2);
+font-weight: 400;
+max-width: 600px;
+margin-bottom: 64px;
+}
+
+/* TOC */
+.toc-chapters {
+display: flex;
+flex-direction: column;
+gap: 2px;
+}
+.toc-chapter {
+display: grid;
+grid-template-columns: 80px 1fr auto;
+align-items: center;
+padding: 20px 24px;
+background: var(–bg2);
+border: 1px solid var(–border);
+gap: 20px;
+transition: all 0.2s;
+cursor: default;
+}
+.toc-chapter:hover {
+border-color: var(–gold);
+background: var(–bg3);
+}
+.toc-ch-num {
+font-family: ‘Playfair Display’, serif;
+font-size: 40px;
+font-weight: 900;
+color: var(–gold);
+opacity: 0.25;
+line-height: 1;
+}
+.toc-ch-info {}
+.toc-ch-title {
+font-size: 15px;
+font-weight: 700;
+margin-bottom: 3px;
+}
+.toc-ch-sub {
+font-size: 12px;
+color: var(–text3);
+font-family: ‘JetBrains Mono’, monospace;
+}
+.toc-ch-badge {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+letter-spacing: 2px;
+padding: 4px 10px;
+border: 1px solid var(–border2);
+color: var(–text3);
+text-transform: uppercase;
+white-space: nowrap;
+}
+.badge-core { border-color: rgba(200,168,75,0.4); color: var(–gold); }
+.badge-entry { border-color: rgba(61,186,120,0.4); color: var(–green); }
+.badge-mgmt { border-color: rgba(91,156,246,0.4); color: var(–blue); }
+.badge-mind { border-color: rgba(224,82,82,0.4); color: var(–red); }
+
+/* CHAPTER HEADER */
+.ch-header {
+display: flex;
+gap: 32px;
+align-items: flex-start;
+margin-bottom: 72px;
+padding-bottom: 48px;
+border-bottom: 1px solid var(–border);
+}
+.ch-num-big {
+font-family: ‘Playfair Display’, serif;
+font-size: 120px;
+font-weight: 900;
+line-height: 1;
+color: var(–gold);
+opacity: 0.12;
+flex-shrink: 0;
+user-select: none;
+}
+.ch-title-block {}
+.ch-eyebrow {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 4px;
+color: var(–gold);
+text-transform: uppercase;
+margin-bottom: 12px;
+}
+.ch-title {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(36px, 5vw, 60px);
+font-weight: 900;
+line-height: 1;
+margin-bottom: 16px;
+}
+.ch-intro {
+font-size: 16px;
+color: var(–text2);
+max-width: 580px;
+line-height: 1.8;
+}
+
+/* TYPOGRAPHY */
+h3 {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold);
+margin: 52px 0 20px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+h3::after { content: ‘’; flex: 1; height: 1px; background: var(–border); }
+
+h4 {
+font-family: ‘Playfair Display’, serif;
+font-size: 22px;
+font-weight: 700;
+margin: 32px 0 12px;
+color: var(–text);
+}
+
+p {
+font-size: 15px;
+color: var(–text2);
+margin-bottom: 18px;
+font-weight: 400;
+line-height: 1.85;
+}
+p strong { color: var(–text); font-weight: 600; }
+p em { color: var(–gold); font-style: normal; }
+
+/* CUSTOM TERM HIGHLIGHT */
+.term {
+display: inline-block;
+background: var(–gold-dim);
+color: var(–gold2);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 13px;
+font-weight: 500;
+padding: 2px 8px;
+border: 1px solid rgba(200,168,75,0.2);
+letter-spacing: 0.5px;
+}
+
+/* CARDS */
+.card {
+background: var(–bg2);
+border: 1px solid var(–border);
+padding: 28px 32px;
+margin: 24px 0;
+position: relative;
+}
+.card::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 3px;
+background: var(–gold);
+}
+.card-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+letter-spacing: 3px;
+color: var(–gold);
+text-transform: uppercase;
+margin-bottom: 10px;
+}
+.card-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px;
+font-weight: 700;
+margin-bottom: 14px;
+color: var(–text);
+}
+.card p { margin-bottom: 8px; }
+.card p:last-child { margin-bottom: 0; }
+
+.card-green::before { background: var(–green); }
+.card-green .card-label { color: var(–green); }
+.card-red::before { background: var(–red); }
+.card-red .card-label { color: var(–red); }
+.card-blue::before { background: var(–blue); }
+.card-blue .card-label { color: var(–blue); }
+
+/* CONCEPT DEFINITION BOX */
+.def-box {
+background: linear-gradient(135deg, #0C0C08, #111108);
+border: 1px solid rgba(200,168,75,0.25);
+padding: 32px 36px;
+margin: 28px 0;
+position: relative;
+overflow: hidden;
+}
+.def-box::after {
+content: ‘✦’;
+position: absolute;
+right: 24px; top: 20px;
+font-size: 24px;
+color: rgba(200,168,75,0.15);
+}
+.def-box-term {
+font-family: ‘Playfair Display’, serif;
+font-size: 28px;
+font-weight: 900;
+font-style: italic;
+color: var(–gold2);
+margin-bottom: 6px;
+}
+.def-box-also {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–text3);
+letter-spacing: 2px;
+margin-bottom: 16px;
+}
+.def-box p { color: var(–text2); margin-bottom: 0; }
+
+/* RULE BOX */
+.rule-box {
+background: var(–bg3);
+border: 1px solid var(–border2);
+border-top: 2px solid var(–gold);
+padding: 28px 32px;
+margin: 24px 0;
+}
+.rule-box-title {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–gold);
+text-transform: uppercase;
+margin-bottom: 20px;
+}
+.rule-list {
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+.rule-list li {
+display: flex;
+gap: 14px;
+align-items: flex-start;
+font-size: 14px;
+color: var(–text2);
+line-height: 1.6;
+}
+.rule-list li::before {
+content: ‘▸’;
+color: var(–gold);
+flex-shrink: 0;
+margin-top: 1px;
+}
+
+/* ALERT / TIP */
+.alert {
+background: var(–red-dim);
+border: 1px solid rgba(224,82,82,0.25);
+border-left: 3px solid var(–red);
+padding: 20px 24px;
+margin: 24px 0;
+font-size: 14px;
+color: var(–text2);
+line-height: 1.7;
+}
+.alert strong { color: var(–red); }
+
+.tip {
+background: var(–green-dim);
+border: 1px solid rgba(61,186,120,0.2);
+border-left: 3px solid var(–green);
+padding: 20px 24px;
+margin: 24px 0;
+font-size: 14px;
+color: var(–text2);
+line-height: 1.7;
+}
+.tip strong { color: var(–green); }
+
+.info {
+background: var(–blue-dim);
+border: 1px solid rgba(91,156,246,0.2);
+border-left: 3px solid var(–blue);
+padding: 20px 24px;
+margin: 24px 0;
+font-size: 14px;
+color: var(–text2);
+line-height: 1.7;
+}
+.info strong { color: var(–blue); }
+
+/* HIGHLIGHT QUOTE */
+.pull-quote {
+margin: 48px 0;
+padding: 0 0 0 32px;
+border-left: 3px solid var(–gold);
+}
+.pull-quote-text {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(20px, 3vw, 30px);
+font-weight: 700;
+font-style: italic;
+color: var(–text);
+line-height: 1.4;
+margin-bottom: 12px;
+}
+.pull-quote-attr {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–text3);
+text-transform: uppercase;
+}
+
+/* TABLE */
+.data-table {
+width: 100%;
+border-collapse: collapse;
+margin: 24px 0;
+font-size: 13px;
+}
+.data-table th {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold);
+padding: 14px 18px;
+text-align: left;
+border-bottom: 1px solid var(–border2);
+background: var(–bg2);
+}
+.data-table td {
+padding: 14px 18px;
+border-bottom: 1px solid var(–border);
+color: var(–text2);
+vertical-align: top;
+line-height: 1.6;
+}
+.data-table tr:hover td { background: var(–bg2); }
+.data-table td:first-child { color: var(–gold2); font-weight: 600; }
+
+/* STEP FLOW */
+.flow {
+display: flex;
+flex-direction: column;
+margin: 32px 0;
+position: relative;
+}
+.flow::before {
+content: ‘’;
+position: absolute;
+left: 22px; top: 44px; bottom: 22px;
+width: 1px;
+background: var(–border2);
+}
+.flow-step {
+display: flex;
+gap: 24px;
+padding: 16px 0;
+}
+.flow-num {
+width: 44px;
+height: 44px;
+background: var(–bg3);
+border: 1px solid var(–border2);
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 14px;
+font-weight: 500;
+color: var(–gold);
+flex-shrink: 0;
+position: relative;
+z-index: 1;
+}
+.flow-step.active .flow-num {
+background: var(–gold);
+color: #000;
+border-color: var(–gold);
+}
+.flow-body { flex: 1; padding-top: 8px; }
+.flow-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: var(–text); }
+.flow-desc { font-size: 13px; color: var(–text3); line-height: 1.65; }
+
+/* CHECKLIST */
+.checklist {
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 0;
+margin: 20px 0;
+border: 1px solid var(–border);
+}
+.checklist li {
+display: flex;
+align-items: flex-start;
+gap: 16px;
+padding: 16px 20px;
+border-bottom: 1px solid var(–border);
+font-size: 14px;
+color: var(–text2);
+line-height: 1.6;
+}
+.checklist li:last-child { border-bottom: none; }
+.check-box {
+width: 20px;
+height: 20px;
+border: 1px solid var(–border2);
+flex-shrink: 0;
+margin-top: 1px;
+}
+
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+
+.stat-box {
+background: var(–bg2);
+border: 1px solid var(–border);
+padding: 24px;
+}
+.stat-box-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–text3);
+margin-bottom: 8px;
+}
+.stat-box-value {
+font-family: ‘Playfair Display’, serif;
+font-size: 36px;
+font-weight: 900;
+color: var(–gold);
+line-height: 1;
+margin-bottom: 6px;
+}
+.stat-box-sub { font-size: 12px; color: var(–text3); }
+
+/* SCENARIO */
+.scenario {
+background: var(–bg3);
+border: 1px solid var(–border2);
+padding: 32px;
+margin: 24px 0;
+}
+.scenario-header {
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 24px;
+padding-bottom: 20px;
+border-bottom: 1px solid var(–border);
+}
+.scenario-type {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+text-transform: uppercase;
+padding: 5px 12px;
+border: 1px solid;
+}
+.scenario-type.bull { color: var(–green); border-color: rgba(61,186,120,0.4); }
+.scenario-type.bear { color: var(–red); border-color: rgba(224,82,82,0.4); }
+.scenario-type.none { color: var(–text3); border-color: var(–border2); }
+.scenario-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 22px;
+font-weight: 700;
+}
+.scenario-row {
+display: grid;
+grid-template-columns: 140px 1fr;
+gap: 16px;
+margin-bottom: 12px;
+font-size: 13px;
+align-items: baseline;
+}
+.scenario-key {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 1px;
+color: var(–text3);
+text-transform: uppercase;
+}
+.scenario-val { color: var(–text2); line-height: 1.6; }
+
+/* BIG STATEMENT */
+.statement {
+margin: 56px 0;
+padding: 48px 0;
+border-top: 1px solid var(–border);
+border-bottom: 1px solid var(–border);
+text-align: center;
+}
+.statement-text {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(32px, 5vw, 60px);
+font-weight: 900;
+line-height: 1;
+color: var(–gold);
+margin-bottom: 16px;
+}
+.statement-sub {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 3px;
+color: var(–text3);
+text-transform: uppercase;
+}
+
+/* DIVIDER */
+hr { border: none; border-top: 1px solid var(–border); margin: 48px 0; }
+
+/* CHAPTER SEPARATOR */
+.ch-sep {
+background: var(–bg2);
+padding: 60px 64px;
+display: flex;
+align-items: center;
+gap: 32px;
+border-top: 1px solid var(–border);
+border-bottom: 1px solid var(–border);
+}
+.ch-sep-num {
+font-family: ‘Playfair Display’, serif;
+font-size: 96px;
+font-weight: 900;
+color: var(–gold);
+opacity: 0.08;
+line-height: 1;
+flex-shrink: 0;
+}
+.ch-sep-line {
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+.ch-sep-text {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 4px;
+color: var(–text3);
+text-transform: uppercase;
+}
+
+/* GLOSSARY */
+.gloss-item {
+display: grid;
+grid-template-columns: 200px 1fr;
+gap: 24px;
+padding: 20px 0;
+border-bottom: 1px solid var(–border);
+font-size: 14px;
+}
+.gloss-term {
+font-family: ‘Playfair Display’, serif;
+font-size: 16px;
+font-weight: 700;
+font-style: italic;
+color: var(–gold2);
+}
+.gloss-also {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+color: var(–text3);
+letter-spacing: 1px;
+margin-top: 3px;
+}
+.gloss-def { color: var(–text2); line-height: 1.7; }
+
+/* PRINT / RESPONSIVE */
+@media (max-width: 640px) {
+.cover-content { padding: 0 28px; }
+.page { padding: 64px 24px; }
+.ch-header { flex-direction: column; }
+.ch-num-big { font-size: 64px; }
+.g2, .g3 { grid-template-columns: 1fr; }
+.gloss-item { grid-template-columns: 1fr; }
+.scenario-row { grid-template-columns: 1fr; }
+.toc-chapter { grid-template-columns: 60px 1fr; }
+.toc-ch-badge { display: none; }
+}
+@media print {
+.page { page-break-before: always; }
+body { background: white; color: black; }
+}
+
+/* COLORS */
+.c-gold { color: var(–gold); }
+.c-green { color: var(–green); }
+.c-red { color: var(–red); }
+.c-blue { color: var(–blue); }
+.c-muted { color: var(–text3); }
+
+/* FOOTER */
+.footer {
+padding: 60px 64px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-top: 1px solid var(–border);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+letter-spacing: 2px;
+color: var(–text3);
+text-transform: uppercase;
+}
+
+<!-- ANIMATED COVER ADDITIONS -->
+
+<style>
+/* PARTICLE CANVAS */
+#particles-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* COVER TICKER */
+.cover-ticker {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 36px;
+  background: rgba(200,168,75,0.08);
+  border-top: 1px solid rgba(200,168,75,0.2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+.ticker-inner {
+  display: flex;
+  gap: 0;
+  animation: ticker-scroll 30s linear infinite;
+  white-space: nowrap;
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(200,168,75,0.6);
+  padding: 0 32px;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(200,168,75,0.15);
+}
+.ticker-item.up { color: rgba(61,186,120,0.7); }
+.ticker-item.down { color: rgba(224,82,82,0.7); }
+
+/* COVER LIVE CHART */
+.cover-chart-wrap {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 340px;
+  height: 220px;
+  opacity: 0.18;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* SCAN LINE EFFECT */
+.cover-scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* GLITCH TITLE EFFECT */
+.cover-title {
+  position: relative;
+}
+.cover-title::before,
+.cover-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: inherit;
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -2px;
+  pointer-events: none;
+}
+.cover-title::before {
+  color: rgba(255,50,50,0.15);
+  animation: glitch1 8s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+.cover-title::after {
+  color: rgba(50,100,255,0.12);
+  animation: glitch2 8s infinite;
+  clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%);
+}
+@keyframes glitch1 {
+  0%, 90%, 100% { transform: translate(0); }
+  91% { transform: translate(-3px, 1px); }
+  93% { transform: translate(3px, -1px); }
+  95% { transform: translate(-2px, 0); }
+  97% { transform: translate(2px, 1px); }
+}
+@keyframes glitch2 {
+  0%, 88%, 100% { transform: translate(0); }
+  89% { transform: translate(3px, -1px); }
+  91% { transform: translate(-3px, 1px); }
+  93% { transform: translate(2px, 0); }
+  95% { transform: translate(-2px, -1px); }
+}
+
+/* HUD ELEMENTS */
+.cover-hud-tl, .cover-hud-tr, .cover-hud-br {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(200,168,75,0.35);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.cover-hud-tl { top: 80px; left: 48px; }
+.cover-hud-tr { top: 48px; right: 48px; }
+.cover-hud-br { bottom: 60px; right: 48px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+.hud-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hud-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: hud-pulse 2s ease-in-out infinite;
+}
+@keyframes hud-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.hud-ring {
+  position: absolute;
+  right: 100px; top: 120px;
+  width: 200px; height: 200px;
+  border: 1px solid rgba(200,168,75,0.06);
+  border-radius: 50%;
+  animation: ring-spin 20s linear infinite;
+  z-index: 0;
+}
+.hud-ring::after {
+  content: '';
+  position: absolute;
+  top: -1px; left: 50%;
+  width: 4px; height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--gold);
+}
+.hud-ring2 {
+  position: absolute;
+  right: 70px; top: 90px;
+  width: 260px; height: 260px;
+  border: 1px solid rgba(200,168,75,0.03);
+  border-radius: 50%;
+  animation: ring-spin 30s linear infinite reverse;
+  z-index: 0;
+}
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* CORNER BRACKETS */
+.bracket {
+  position: absolute;
+  width: 20px; height: 20px;
+  z-index: 3;
+}
+.bracket-tl { top: 100px; left: 44px; border-top: 1px solid rgba(200,168,75,0.4); border-left: 1px solid rgba(200,168,75,0.4); }
+.bracket-tr { top: 100px; right: 44px; border-top: 1px solid rgba(200,168,75,0.4); border-right: 1px solid rgba(200,168,75,0.4); }
+
+/* ANIMATED CHART LINE (cover background) */
+.cover-bg-chart {
+  position: absolute;
+  bottom: 36px; left: 0; right: 0;
+  height: 160px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.06;
+}
+
+/* SECTION VISUAL EXAMPLES */
+.chart-example {
+  background: #0A0C0F;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  padding: 0;
+  margin: 28px 0;
+  overflow: hidden;
+  position: relative;
+}
+.chart-example-header {
+  background: #111418;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.chart-dot { width: 8px; height: 8px; border-radius: 50%; }
+.chart-dot.red { background: #E05252; }
+.chart-dot.yellow { background: #E0B552; }
+.chart-dot.green { background: #52E07A; }
+.chart-example svg {
+  display: block;
+  width: 100%;
+}
+.chart-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: rgba(170,170,170,0.7);
+  letter-spacing: 1px;
+}
+.chart-label-gold {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: var(--gold);
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.chart-label-green {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: #3DBA78;
+  letter-spacing: 1px;
+}
+.chart-label-red {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: #E05252;
+  letter-spacing: 1px;
+}
+.chart-annotation {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.chart-example-caption {
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* SCROLL REVEAL */
+.page {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.page.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cover { opacity: 1; transform: none; }
+
+
+
+/* MATRIX RAIN (chapter 7 bg) */
+.matrix-bg {
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px;
+  height: 100%;
+  opacity: 0.03;
+  pointer-events: none;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+}
+
+/* CHAPTER PROGRESS */
+.ch-progress {
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  margin-bottom: 40px;
+  position: relative;
+}
+.ch-progress::after {
+  content: '';
+  position: absolute;
+  right: 0; top: -3px;
+  width: 8px; height: 8px;
+  background: var(--gold2);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold);
+}
+
+/* NEON ACCENT LINE */
+.neon-rule {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 40px 0;
+  box-shadow: 0 0 8px rgba(200,168,75,0.3);
+}
+
+/* TECH GRID BACKGROUND FOR CH7 */
+.tech-section {
+  position: relative;
+}
+.tech-section::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background-image:
+    linear-gradient(rgba(200,168,75,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,168,75,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+.tech-section > * { position: relative; z-index: 1; }
+</style>
+
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- ACCESS GATE + ADMIN PANEL                                   -->
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<style>
+/* ── GATE OVERLAY ── */
+#access-gate {
+  position: fixed;
+  inset: 0;
+  background: #060606;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+}
+.gate-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200,168,75,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,168,75,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.gate-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, #060606 80%);
+  pointer-events: none;
+}
+.gate-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+  width: 100%;
+  max-width: 420px;
+}
+.gate-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  color: #C8A84B;
+  font-style: italic;
+  line-height: 1;
+  margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+.gate-logo-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: rgba(200,168,75,0.5);
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+.gate-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(200,168,75,0.7);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.gate-input-wrap {
+  width: 100%;
+  position: relative;
+  margin-bottom: 16px;
+}
+.gate-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #333;
+  color: #EBEBEB;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 18px 20px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.gate-input:focus { border-color: #C8A84B; }
+.gate-input::placeholder {
+  color: #444;
+  letter-spacing: 2px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.gate-btn {
+  width: 100%;
+  background: #C8A84B;
+  color: #000;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 18px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.gate-btn:hover { background: #E4C97E; }
+.gate-btn:active { transform: scale(0.98); }
+.gate-error {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #E05252;
+  text-transform: uppercase;
+  margin-top: 14px;
+  height: 16px;
+  transition: opacity 0.3s;
+}
+.gate-footer {
+  position: absolute;
+  bottom: 32px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #333;
+  text-transform: uppercase;
+}
+
+/* ── ADMIN PANEL ── */
+#admin-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 99998;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+}
+#admin-panel.open { display: block; }
+
+.admin-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #0F0F0F;
+  border: 1px solid #2C2C2C;
+  padding: 32px 28px;
+  position: relative;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #232323;
+}
+.admin-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #C8A84B;
+  text-transform: uppercase;
+}
+.admin-close {
+  background: none;
+  border: 1px solid #333;
+  color: #666;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.admin-close:hover { color: #EBEBEB; border-color: #666; }
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.admin-stat {
+  background: #161616;
+  border: 1px solid #232323;
+  padding: 16px;
+  text-align: center;
+}
+.admin-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: #C8A84B;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.admin-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.admin-input-num {
+  flex: 1;
+  min-width: 80px;
+  background: #161616;
+  border: 1px solid #333;
+  color: #EBEBEB;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  padding: 12px 14px;
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.admin-input-num:focus { border-color: #C8A84B; }
+.btn-generate {
+  background: #C8A84B;
+  color: #000;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.btn-generate:hover { background: #E4C97E; }
+
+
+.btn-danger {
+  background: rgba(224,82,82,0.1);
+  color: #E05252;
+  border: 1px solid rgba(224,82,82,0.3);
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.btn-danger:hover { background: rgba(224,82,82,0.2); }
+
+.admin-codes-list {
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid #232323;
+  -webkit-overflow-scrolling: touch;
+}
+.code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #1A1A1A;
+  gap: 12px;
+}
+.code-row:last-child { border-bottom: none; }
+.code-row.used { opacity: 0.4; }
+.code-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #EBEBEB;
+  flex: 1;
+}
+.code-row.used .code-text {
+  text-decoration: line-through;
+  color: #555;
+}
+.code-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid;
+}
+.code-status.active { color: #3DBA78; border-color: rgba(61,186,120,0.4); }
+.code-status.used-tag { color: #555; border-color: #333; }
+.btn-copy-code {
+  background: none;
+  border: 1px solid #333;
+  color: #888;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.btn-copy-code:hover { border-color: #C8A84B; color: #C8A84B; }
+.btn-copy-code.copied { border-color: #3DBA78; color: #3DBA78; }
+
+.admin-empty {
+  padding: 40px 20px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #444;
+  text-transform: uppercase;
+}
+
+/* ── PASSWORD LOGIN (admin) ── */
+#admin-login {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+}
+#admin-login.open { display: flex; }
+.admin-login-box {
+  background: #0F0F0F;
+  border: 1px solid #C8A84B;
+  padding: 36px 32px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-login-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #C8A84B;
+  text-transform: uppercase;
+  text-align: center;
+}
+.admin-login-input {
+  background: #161616;
+  border: 1px solid #333;
+  color: #EBEBEB;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  letter-spacing: 2px;
+  padding: 14px 16px;
+  outline: none;
+  text-align: center;
+  -webkit-appearance: none;
+  border-radius: 0;
+  -webkit-text-security: disc;
+}
+.admin-login-input:focus { border-color: #C8A84B; }
+.admin-login-btn {
+  background: #C8A84B;
+  color: #000;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.admin-login-err {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #E05252;
+  text-transform: uppercase;
+  text-align: center;
+  height: 14px;
+}
+
+/* Shake animation for wrong password */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+.shake { animation: shake 0.4s ease; }
+</style>
+
+<!-- ── ACCESS GATE HTML ── -->
+
+<div id="access-gate">
+  <div class="gate-grid"></div>
+  <div class="gate-vignette"></div>
+  <div class="gate-content">
+    <div class="gate-logo">The Window</div>
+    <div class="gate-logo-sub">NY Open Trading System</div>
+    <div class="gate-title">Enter Your Access Code</div>
+    <div class="gate-input-wrap">
+      <input type="text" class="gate-input" id="gate-code-input" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
+    </div>
+    <button class="gate-btn" id="gate-submit-btn">Access Course</button>
+    <div class="gate-error" id="gate-error"></div>
+  </div>
+  <div class="gate-footer">Protected Content — Authorized Access Only</div>
+</div>
+
+<!-- ── ADMIN PASSWORD LOGIN ── -->
+
+<div id="admin-login">
+  <div class="admin-login-box">
+    <div class="admin-login-title">Admin Access</div>
+    <input type="password" class="admin-login-input" id="admin-pw-input" placeholder="••••••••••" autocomplete="off"/>
+    <button class="admin-login-btn" id="admin-pw-btn">Enter</button>
+    <div class="admin-login-err" id="admin-pw-err"></div>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL HTML ── -->
+
+<div id="admin-panel">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <div class="admin-title">⚙ Admin Panel — Code Manager</div>
+      <button class="admin-close" id="admin-close-btn">✕ Close</button>
+    </div>
+
+```
+<div class="admin-stats">
+  <div class="admin-stat">
+    <div class="admin-stat-num" id="stat-total">0</div>
+    <div class="admin-stat-label">Generated This Session</div>
+  </div>
+  <div class="admin-stat" style="grid-column:span 2">
+    <div class="admin-stat-num" id="stat-used" style="color:#E05252;font-size:16px;margin-top:4px">0</div>
+    <div class="admin-stat-label" id="stat-used-label">Used on this device</div>
+  </div>
+</div>
+
+<div style="background:rgba(61,186,120,0.07);border:1px solid rgba(61,186,120,0.2);padding:12px 16px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(61,186,120,0.8);letter-spacing:1.5px;line-height:1.7;">
+  Generate a code → COPY → send it to your student via WhatsApp, DM, anywhere. It works on any device with this file. No export needed.
+</div>
+<div class="admin-controls">
+  <input type="number" class="admin-input-num" id="gen-count" min="1" max="50" value="1" placeholder="Qty"/>
+  <button class="btn-generate" id="btn-generate">＋ Generate</button>
+  <button class="btn-danger" id="btn-clear">✕ Clear List</button>
+</div>
+
+
+<div class="admin-codes-list" id="codes-list">
+  <div class="admin-empty" id="codes-empty">No codes generated yet. Generate some above.</div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ── ACCESS SYSTEM JAVASCRIPT ── -->
+
+<script>
+(function() {
+  'use strict';
+
+  // ── SECRET KEY (do not share) ──
+  var SECRET = 'TW2024KEOMAZZ';
+  var ADMIN_PW = 'Keomazz22';
+  var STORAGE_USED = 'tw_used_v1';
+  var STORAGE_SESSION = 'tw_session_v1';
+  var STORAGE_UNLOCK = 'tw_unlock_v1';
+
+  // ── Code validation algorithm ──
+  // Code format: XXXX-XXXX-XXXX
+  // Last 4 chars = first 4 chars of SHA256(SECRET + first 8 chars)
+  // This means ANY valid code works on ANY copy of the file
+
+  function sha256hex(str) {
+    // Pure JS SHA-256 implementation
+    function rightRotate(value, amount) {
+      return (value >>> amount) | (value << (32 - amount));
+    }
+    var mathPow = Math.pow;
+    var maxWord = mathPow(2, 32);
+    var lengthProperty = 'length';
+    var i, j, result = '';
+    var words = [];
+    var asciiBitLength = str[lengthProperty] * 8;
+    var hash = [], k = [];
+    var primeCounter = k[lengthProperty];
+    var isComposite = {};
+    for (var candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) isComposite[i + candidate] = candidate;
+        hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+        k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+      }
+    }
+    str += '\x80';
+    while (str[lengthProperty] % 64 - 56) str += '\x00';
+    for (i = 0; i < str[lengthProperty]; i++) {
+      j = str.charCodeAt(i);
+      if (j >> 8) return '';
+      words[i >> 2] |= j << ((3 - i) % 4) * 8;
+    }
+    words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+    words[words[lengthProperty]] = (asciiBitLength);
+    for (j = 0; j < words[lengthProperty];) {
+      var w = words.slice(j, j += 16);
+      var oldHash = hash.slice(0);
+      for (i = 0; i < 64; i++) {
+        var i2 = i + j - 16;
+        var w15 = w[i - 15], w2 = w[i - 2];
+        var a = oldHash[0], e = oldHash[4];
+        var temp1 = oldHash[7]
+          + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+          + ((e & oldHash[5]) ^ (~e & oldHash[6]))
+          + k[i]
+          + (w[i] = (i < 16) ? w[i] : (
+              w[i - 16]
+              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+              + w[i - 7]
+              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+            ) | 0
+          );
+        var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+          + ((a & oldHash[1]) ^ (a & oldHash[2]) ^ (oldHash[1] & oldHash[2]));
+        hash = [(temp1 + temp2) | 0].concat(hash);
+        hash[4] = (hash[4] + temp1) | 0;
+        hash.length = 8;
+      }
+      for (i = 0; i < 8; i++) oldHash[i] = hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+    for (i = 0; i < 8; i++) {
+      for (j = 3; j + 1; j--) {
+        var b = (hash[i] >> (j * 8)) & 255;
+        result += ((b < 16) ? '0' : '') + b.toString(16);
+      }
+    }
+    return result.toUpperCase();
+  }
+
+  function verifyCode(code) {
+    var clean = code.replace(/-/g, '').toUpperCase();
+    if (clean.length !== 12) return false;
+    var prefix = clean.slice(0, 8);
+    var check = clean.slice(8);
+    var expected = sha256hex(SECRET + prefix).slice(0, 4);
+    return expected === check;
+  }
+
+  function generateCode() {
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    function seg(n) {
+      var s = '';
+      for (var i = 0; i < n; i++) s += chars[Math.floor(Math.random() * chars.length)];
+      return s;
+    }
+    var prefix = seg(8);
+    var check = sha256hex(SECRET + prefix).slice(0, 4);
+    return prefix.slice(0,4) + '-' + prefix.slice(4) + '-' + check;
+  }
+
+  function loadUsed() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_USED) || '[]'); } catch(e) { return []; }
+  }
+  function markUsed(code) {
+    var used = loadUsed();
+    if (used.indexOf(code) === -1) used.push(code);
+    try { localStorage.setItem(STORAGE_USED, JSON.stringify(used)); } catch(e) {}
+  }
+  function isUsed(code) {
+    return loadUsed().indexOf(code) !== -1;
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(function() { fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  function shakeEl(el) {
+    if (!el) return;
+    el.classList.add('shake');
+    setTimeout(function() { el.classList.remove('shake'); }, 500);
+  }
+
+  // ── ADMIN PANEL: generated codes this session (just for display) ──
+  var sessionCodes = [];
+
+  function init() {
+    var gate = document.getElementById('access-gate');
+
+    // Already unlocked permanently or this session?
+    try {
+      var permUnlock = localStorage.getItem(STORAGE_UNLOCK);
+      var sessUnlock = sessionStorage.getItem(STORAGE_SESSION);
+      if (permUnlock === 'unlocked' || sessUnlock === 'unlocked') {
+        if (gate) gate.style.display = 'none';
+        return;
+      }
+    } catch(e) {}
+
+    // ── Gate input ──
+    var codeInput = document.getElementById('gate-code-input');
+    var gateErr = document.getElementById('gate-error');
+
+    if (codeInput) {
+      codeInput.addEventListener('input', function() {
+        var val = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12);
+        var out = '';
+        for (var i = 0; i < val.length; i++) {
+          if (i === 4 || i === 8) out += '-';
+          out += val[i];
+        }
+        this.value = out;
+      });
+      codeInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitCode(); });
+    }
+
+    function showGateError(msg) {
+      if (!gateErr) return;
+      gateErr.textContent = msg;
+      setTimeout(function() { if (gateErr) gateErr.textContent = ''; }, 3500);
+    }
+    function unlockCourse() {
+      try {
+        localStorage.setItem(STORAGE_UNLOCK, 'unlocked');
+        sessionStorage.setItem(STORAGE_SESSION, 'unlocked');
+      } catch(e) {}
+      if (gate) {
+        gate.style.transition = 'opacity 0.6s ease';
+        gate.style.opacity = '0';
+        setTimeout(function() { gate.style.display = 'none'; }, 650);
+      }
+    }
+    function submitCode() {
+      if (!codeInput) return;
+      var entered = codeInput.value.trim().toUpperCase();
+      if (!entered) { showGateError('ENTER YOUR ACCESS CODE'); return; }
+      if (!verifyCode(entered)) {
+        showGateError('INVALID CODE — CONTACT YOUR MENTOR');
+        shakeEl(document.querySelector('.gate-content'));
+        return;
+      }
+      // Mark used on this device and unlock permanently
+      markUsed(entered);
+      unlockCourse();
+    }
+
+    var gateBtn = document.getElementById('gate-submit-btn');
+    if (gateBtn) gateBtn.addEventListener('click', submitCode);
+
+    // ── Triple tap → admin login ──
+    var tapCount = 0, tapTimer = null;
+    document.addEventListener('click', function(e) {
+      var targets = [document.querySelector('.cover-title'), document.querySelector('.gate-logo')];
+      var hit = targets.some(function(t) { return t && (t === e.target || t.contains(e.target)); });
+      if (hit) {
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(function() { tapCount = 0; }, 700);
+        if (tapCount >= 3) { tapCount = 0; clearTimeout(tapTimer); openAdminLogin(); }
+      }
+    });
+
+    // ── Admin Login ──
+    var adminLoginEl = document.getElementById('admin-login');
+    var adminPwInput = document.getElementById('admin-pw-input');
+    var adminPwErr = document.getElementById('admin-pw-err');
+
+    function openAdminLogin() {
+      if (!adminLoginEl) return;
+      if (adminPwInput) adminPwInput.value = '';
+      if (adminPwErr) adminPwErr.textContent = '';
+      adminLoginEl.classList.add('open');
+      setTimeout(function() { if (adminPwInput) adminPwInput.focus(); }, 150);
+    }
+    var adminPwBtn = document.getElementById('admin-pw-btn');
+    if (adminPwBtn) adminPwBtn.addEventListener('click', checkAdminPw);
+    if (adminPwInput) {
+      adminPwInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkAdminPw();
+        if (e.key === 'Escape') adminLoginEl.classList.remove('open');
+      });
+    }
+    if (adminLoginEl) {
+      adminLoginEl.addEventListener('click', function(e) {
+        if (e.target === adminLoginEl) adminLoginEl.classList.remove('open');
+      });
+    }
+    function checkAdminPw() {
+      if (!adminPwInput) return;
+      if (adminPwInput.value === ADMIN_PW) {
+        adminLoginEl.classList.remove('open');
+        openAdminPanel();
+      } else {
+        if (adminPwErr) adminPwErr.textContent = 'WRONG PASSWORD';
+        shakeEl(adminPwInput);
+        adminPwInput.value = '';
+        setTimeout(function() { if (adminPwErr) adminPwErr.textContent = ''; }, 1500);
+      }
+    }
+
+    // ── Admin Panel ──
+    var adminPanelEl = document.getElementById('admin-panel');
+    function openAdminPanel() {
+      if (!adminPanelEl) return;
+      if (gate) gate.style.display = 'none';
+      adminPanelEl.classList.add('open');
+      renderPanel();
+    }
+    var adminCloseBtn = document.getElementById('admin-close-btn');
+    if (adminCloseBtn) adminCloseBtn.addEventListener('click', function() { adminPanelEl.classList.remove('open'); });
+    if (adminPanelEl) {
+      adminPanelEl.addEventListener('click', function(e) {
+        if (e.target === adminPanelEl) adminPanelEl.classList.remove('open');
+      });
+    }
+
+    // ── Generate ONE code ──
+    var btnGenerate = document.getElementById('btn-generate');
+    if (btnGenerate) btnGenerate.addEventListener('click', function() {
+      var countEl = document.getElementById('gen-count');
+      var count = Math.min(Math.max(parseInt(countEl ? countEl.value : 1) || 1, 1), 50);
+      for (var i = 0; i < count; i++) {
+        sessionCodes.unshift({ code: generateCode(), copied: false });
+      }
+      if (sessionCodes.length > 500) sessionCodes = sessionCodes.slice(0, 500);
+      renderPanel();
+    });
+
+    // ── Clear list ──
+    var btnClear = document.getElementById('btn-clear');
+    if (btnClear) btnClear.addEventListener('click', function() {
+      if (!confirm('Clear this session list? Codes already sent are still valid.')) return;
+      sessionCodes = [];
+      renderPanel();
+    });
+
+    // ── Render panel ──
+    function renderPanel() {
+      var usedCodes = loadUsed();
+      var stTotal = document.getElementById('stat-total');
+      var stUsed = document.getElementById('stat-used');
+      if (stTotal) stTotal.textContent = sessionCodes.length;
+      if (stUsed) stUsed.textContent = usedCodes.length + ' used on this device';
+
+      var listEl = document.getElementById('codes-list');
+      var emptyEl = document.getElementById('codes-empty');
+      if (!listEl) return;
+      listEl.querySelectorAll('.code-row').forEach(function(r) { r.remove(); });
+
+      if (!sessionCodes.length) {
+        if (emptyEl) emptyEl.style.display = 'block';
+        return;
+      }
+      if (emptyEl) emptyEl.style.display = 'none';
+
+      sessionCodes.forEach(function(item, idx) {
+        var row = document.createElement('div');
+        row.className = 'code-row';
+
+        var ct = document.createElement('div');
+        ct.className = 'code-text';
+        ct.textContent = item.code;
+
+        var cb = document.createElement('button');
+        cb.className = 'btn-copy-code' + (item.copied ? ' copied' : '');
+        cb.textContent = item.copied ? '✓ SENT' : 'COPY';
+        (function(i, btn) {
+          btn.addEventListener('click', function() {
+            copyToClipboard(sessionCodes[i].code);
+            sessionCodes[i].copied = true;
+            btn.textContent = '✓ SENT';
+            btn.classList.add('copied');
+          });
+        })(idx, cb);
+
+        row.appendChild(ct);
+        row.appendChild(cb);
+        listEl.appendChild(row);
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+
+})();
+</script>
+
+<!-- ═══════════════════════════════════ COVER ═══════════════════════════════════ -->
+
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-vignette"></div>
+  <canvas id="particles-canvas"></canvas>
+  <div class="cover-scanline"></div>
+  <div class="hud-ring"></div>
+  <div class="hud-ring2"></div>
+  <div class="bracket bracket-tl"></div>
+  <div class="bracket bracket-tr"></div>
+  <div class="cover-hud-tl">
+    <div class="hud-line"><span class="hud-dot"></span> SYSTEM ONLINE</div>
+  </div>
+  <div class="cover-hud-tr">NY Open Trading System — Confidential</div>
+  <div class="cover-bg-chart">
+    <svg viewBox="0 0 900 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="0,120 40,115 80,110 120,118 160,105 200,95 240,100 280,85 320,78 360,90 380,45 400,55 420,30 460,40 500,35 540,28 560,50 580,42 620,35 660,25 700,30 740,20 780,25 820,15 860,20 900,10"
+        fill="none" stroke="rgba(200,168,75,0.8)" stroke-width="1.5"/>
+      <polyline points="0,120 40,115 80,110 120,118 160,105 200,95 240,100 280,85 320,78 360,90 380,45 400,55 420,30 460,40 500,35 540,28 560,50 580,42 620,35 660,25 700,30 740,20 780,25 820,15 860,20 900,10"
+        fill="none" stroke="rgba(200,168,75,0.1)" stroke-width="8"/>
+    </svg>
+  </div>
+  <div class="cover-ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item up">NQ ▲ +1.24%</span>
+      <span class="ticker-item">9:30 AM → THE WINDOW OPENS</span>
+      <span class="ticker-item down">RISK MANAGEMENT FIRST</span>
+      <span class="ticker-item up">ES ▲ +0.87%</span>
+      <span class="ticker-item">THE CURRENT • BULLISH</span>
+      <span class="ticker-item">FULL STACK CONFIRMED</span>
+      <span class="ticker-item up">CLEAN FLUSH DETECTED ▲</span>
+      <span class="ticker-item">MAGNETIC TARGET: PDH</span>
+      <span class="ticker-item down">DEAD WATER — NO TRADE</span>
+      <span class="ticker-item">SPLIT SIGNAL • NQ ≠ ES</span>
+      <span class="ticker-item up">NQ ▲ +1.24%</span>
+      <span class="ticker-item">9:30 AM → THE WINDOW OPENS</span>
+      <span class="ticker-item down">RISK MANAGEMENT FIRST</span>
+      <span class="ticker-item up">ES ▲ +0.87%</span>
+      <span class="ticker-item">THE CURRENT • BULLISH</span>
+      <span class="ticker-item">FULL STACK CONFIRMED</span>
+      <span class="ticker-item up">CLEAN FLUSH DETECTED ▲</span>
+      <span class="ticker-item">MAGNETIC TARGET: PDH</span>
+      <span class="ticker-item down">DEAD WATER — NO TRADE</span>
+      <span class="ticker-item">SPLIT SIGNAL • NQ ≠ ES</span>
+    </div>
+  </div>
+  <div class="cover-number">v2.0</div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Professional Trading Mentorship</div>
+    <div class="cover-title" data-text="THE WINDOW">THE<br><span class="accent">WINDOW</span></div>
+    <div class="cover-subtitle">A Complete System for Trading<br>Indices at the New York Open</div>
+    <p class="cover-desc">Everything you need to understand, prepare, and execute a high-probability trade at the most important moment of the trading day — 9:30 AM New York. Built on ICT concepts, liquidity mechanics, and a precise top-down methodology refined through real screen time.</p>
+    <div class="cover-stats">
+      <div><div class="cover-stat-label">Focus Instrument</div><div class="cover-stat-value">Indices</div></div>
+      <div><div class="cover-stat-label">Core Session</div><div class="cover-stat-value">9:30 NY</div></div>
+      <div><div class="cover-stat-label">Chapters</div><div class="cover-stat-value">10</div></div>
+      <div><div class="cover-stat-label">Framework</div><div class="cover-stat-value">ICT / SMC</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TABLE OF CONTENTS ═══════════════════════ -->
+
+<div class="page">
+  <div id="toc" class="section-tag">Table of Contents</div>
+  <div class="page-title">What You Will Learn</div>
+  <p class="page-subtitle">Ten chapters. Each one building on the last. From raw market mechanics to full trade execution.</p>
+  <div class="toc-chapters">
+    <div class="toc-chapter"><div class="toc-ch-num">01</div><div class="toc-ch-info"><div class="toc-ch-title">How Markets Actually Work</div><div class="toc-ch-sub">Price, participants, liquidity, and why the market moves the way it does</div></div><div class="toc-ch-badge badge-core">Foundation</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">02</div><div class="toc-ch-info"><div class="toc-ch-title">Market Structure — Reading the Story</div><div class="toc-ch-sub">Swing points, BOS, CHOCH, and how structure tells you the market's intention</div></div><div class="toc-ch-badge badge-core">Foundation</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">03</div><div class="toc-ch-info"><div class="toc-ch-title">The Liquidity Engine</div><div class="toc-ch-sub">BSL, SSL, The Flush, equal highs & lows, and why retail always loses</div></div><div class="toc-ch-badge badge-core">Foundation</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">04</div><div class="toc-ch-info"><div class="toc-ch-title">ICT Concepts — The Building Blocks</div><div class="toc-ch-sub">FVG, Order Blocks, Premium & Discount, NWOG, Optimal Trade Entry</div></div><div class="toc-ch-badge badge-core">Foundation</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">05</div><div class="toc-ch-info"><div class="toc-ch-title">The HTF Map — Top-Down Analysis</div><div class="toc-ch-sub">Weekly, Daily, 4H, 2H, 1H analysis — building your directional bias</div></div><div class="toc-ch-badge badge-core">Methodology</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">06</div><div class="toc-ch-info"><div class="toc-ch-title">Asia & London Sessions — Reading the Setup</div><div class="toc-ch-sub">Asia range, London range, how sessions set up the NY trade every day</div></div><div class="toc-ch-badge badge-core">Methodology</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">07</div><div class="toc-ch-info"><div class="toc-ch-title">The NY Open — Entry Execution</div><div class="toc-ch-sub">Liquidity sweep, BOS, inversion FVG, SMT divergence, stop & target placement</div></div><div class="toc-ch-badge badge-entry">Entry</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">08</div><div class="toc-ch-info"><div class="toc-ch-title">Trade Management</div><div class="toc-ch-sub">Stop placement, partials, targeting, protecting profits, when to walk away</div></div><div class="toc-ch-badge badge-mgmt">Management</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">09</div><div class="toc-ch-info"><div class="toc-ch-title">Scenarios, Setups & Dead Water Days</div><div class="toc-ch-sub">Bullish, bearish, and no-trade scenarios broken down in full detail</div></div><div class="toc-ch-badge badge-entry">Examples</div></div>
+    <div class="toc-chapter"><div class="toc-ch-num">10</div><div class="toc-ch-info"><div class="toc-ch-title">Rules, Psychology & The Long Game</div><div class="toc-ch-sub">Non-negotiables, journaling, the learning curve, and how to survive long enough to succeed</div></div><div class="toc-ch-badge badge-mind">Mindset</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 1 ════════════════════════════ -->
+
+<div class="page" id="ch1">
+  <div class="ch-header">
+    <div class="ch-num-big">01</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter One — Foundation</div>
+      <div class="ch-title">How Markets Actually Work</div>
+      <p class="ch-intro">Before you look at a single chart or learn a single concept, you need to understand the true nature of financial markets. Most traders fail because they operate on a false belief about what the market is and why it moves. This chapter corrects that.</p>
+    </div>
+  </div>
+
+  <h3>What Is a Market?</h3>
+  <p>A market is a mechanism for matching buyers and sellers. Every transaction has someone on each side. Price moves because of an imbalance between the two sides — more aggressive buyers push price up, more aggressive sellers push it down. But the market is not random. At the institutional level, it is carefully managed to achieve one goal: fill large orders at the most efficient price possible.</p>
+
+  <h3>Who Is Actually Moving the Market?</h3>
+  <p>There are two categories of participants: <strong>retail traders</strong> and <strong>institutional participants</strong> (banks, hedge funds, prop firms, market makers, central banks). The difference is not just size — it is intent and information.</p>
+
+  <div class="card">
+    <div class="card-label">Retail Traders</div>
+    <div class="card-title">The Crowd</div>
+    <p>Retail traders trade based on indicators, patterns, and news. They place stops at obvious levels — below support, above resistance. They buy breakouts and sell breakdowns. Because millions of retail traders learned the same textbook rules, their orders cluster at predictable locations. These clusters are the liquidity that institutions exploit.</p>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-label">Institutional Participants</div>
+    <div class="card-title">The Engine</div>
+    <p>Institutions need to move enormous positions. You cannot buy $500 million worth of NQ at a single price — you would move the market against yourself. So institutions engineer the conditions they need: they push price into areas where enough opposite-side orders exist to fill their position. They create false moves, collect retail stops, and then move in the direction they always intended.</p>
+  </div>
+
+  <div class="pull-quote">
+    <div class="pull-quote-text">"The market doesn't move randomly. It moves to collect orders. Once you see this, you cannot unsee it."</div>
+    <div class="pull-quote-attr">Core Principle of This System</div>
+  </div>
+
+  <h3>The Instruments We Trade</h3>
+  <table class="data-table">
+    <thead><tr><th>Instrument</th><th>Full Name</th><th>Why We Use It</th><th>Contract Value</th></tr></thead>
+    <tbody>
+      <tr><td>NQ</td><td>E-Mini NASDAQ-100 Futures</td><td>High volatility, clean institutional moves, excellent liquidity at the open</td><td>$20 × index</td></tr>
+      <tr><td>ES</td><td>E-Mini S&P 500 Futures</td><td>Smoother action, used for Split Signal confirmation</td><td>$50 × index</td></tr>
+      <tr><td>MNQ</td><td>Micro E-Mini NASDAQ-100</td><td>1/10th of NQ — perfect for learning with real money at manageable risk</td><td>$2 × index</td></tr>
+      <tr><td>MES</td><td>Micro E-Mini S&P 500</td><td>1/10th of ES — ideal for Split Signal practice and learning</td><td>$5 × index</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info"><strong>Learning advice:</strong> Start on MNQ/MES. The psychological reality of real money matters, but you need the smallest possible size so losses don't derail your emotional state. Graduate to NQ/ES after 50+ documented journal trades with consistent setup identification.</div>
+
+  <h3>The Trading Sessions — Time Is Everything</h3>
+  <p>Not all market hours are equal. Price behavior is dramatically different by session. This system focuses on one: the <strong>New York open</strong>. But to trade it properly, you must understand what came before.</p>
+
+  <table class="data-table">
+    <thead><tr><th>Session</th><th>EST Time</th><th>Characteristic</th><th>Our Use</th></tr></thead>
+    <tbody>
+      <tr><td>Asia</td><td>6PM – 6AM</td><td>Low volume, range-bound, accumulation. The market consolidates and builds the range that London and NY will target.</td><td>Mark Asia High & Low — prime Flush targets</td></tr>
+      <tr><td>London Open</td><td>3AM – 8:30AM</td><td>Volume increases. Often creates the day's first directional move. Sometimes reverses at NY open.</td><td>Mark London High & Low — often the NY sweep target</td></tr>
+      <tr><td>NY Open</td><td>9:30AM – 12PM</td><td>Highest volume. Most volatile. Most institutional flow. The most important window of the day.</td><td><strong>This is where we trade. This is The Window.</strong></td></tr>
+      <tr><td>NY Afternoon</td><td>1PM – 4PM</td><td>Lower volume. Choppier. Less predictable. Often random.</td><td>We are not trading. We are done.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="statement">
+    <div class="statement-text">9:30 AM — 10:30 AM</div>
+    <div class="statement-sub">The only window that matters. One hour. One setup. That's the entire game.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 2 ════════════════════════════ -->
+
+<div class="page" id="ch2">
+  <div class="ch-header">
+    <div class="ch-num-big">02</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Two — Foundation</div>
+      <div class="ch-title">Market Structure — Reading the Story</div>
+      <p class="ch-intro">Every chart is telling a story. Market structure is the language of that story. Before trading anything, you must read price structure fluently — understanding when a trend continues, when it weakens, and when it reverses.</p>
+    </div>
+  </div>
+
+  <h3>Swing Highs and Swing Lows</h3>
+  <p>The foundation of structure analysis is swing points — the peaks and valleys where price reversed direction. They are not random. They are the footprints of institutional order flow.</p>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Swing High</div>
+      <div class="card-title">A Peak</div>
+      <p>A candle (or group) with a higher high than those on both sides. Where selling overcame buying and price reversed down. Marks the upper boundary of a range and the location of buy-side liquidity — shorts' stops and breakout buyers' pending orders.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Swing Low</div>
+      <div class="card-title">A Valley</div>
+      <p>A candle (or group) with a lower low than those on both sides. Where buying overcame selling and price reversed up. Marks the lower boundary of a range and the location of sell-side liquidity — longs' stops and breakdown sellers' pending orders.</p>
+    </div>
+  </div>
+
+  <h3>Bullish vs Bearish Structure</h3>
+  <p><strong>Bullish structure:</strong> Higher Highs (HH) and Higher Lows (HL). Each peak is higher than the last; each pullback holds above the previous low. The trend is up — only look for longs.</p>
+  <p><strong>Bearish structure:</strong> Lower Highs (LH) and Lower Lows (LL). Each rally fails lower than the last; each drop goes further down. The trend is down — only look for shorts.</p>
+
+  <h3>Break of Structure (BOS)</h3>
+  <div class="def-box">
+    <div class="def-box-term">Break of Structure</div>
+    <div class="def-box-also">BOS — Standard ICT / SMC Terminology</div>
+    <p>A BOS occurs when price moves through and closes beyond a significant swing point <em>in the direction of the current trend</em>, confirming continuation. Bullish BOS: price closes above the most recent swing high. Bearish BOS: price closes below the most recent swing low. In this system, a BOS on the 5M/1M chart after The Flush is one of our primary entry confirmation signals — it tells us the sweep is complete and the real directional move has begun.</p>
+  </div>
+
+  <h3>Change of Character (CHOCH)</h3>
+  <div class="def-box">
+    <div class="def-box-term">Change of Character</div>
+    <div class="def-box-also">CHOCH — Standard ICT / SMC Terminology</div>
+    <p>A CHOCH is the first break of structure <em>against</em> the current trend — the initial signal that the market may be reversing. In a bullish trend: price breaks below the most recent swing low for the first time. In a bearish trend: price breaks above the most recent swing high for the first time. A CHOCH alone does not confirm reversal, but combined with The Flush and our other signals, a CHOCH on the LTF is a high-quality entry signal.</p>
+  </div>
+
+  <div class="tip"><strong>BOS vs CHOCH in practice:</strong> After The Flush at the NY open, we are watching the 5M chart for either a BOS (in a trend continuation context) or a CHOCH (in a reversal context) in the direction of The Current. Either one signals that the flush is done and the real move is beginning. The inversion FVG gives us the precise entry level after this signal.</div>
+
+  <h3>Internal vs External Structure</h3>
+  <div class="card">
+    <div class="card-label">External Structure</div>
+    <div class="card-title">The Major Swing Points</div>
+    <p>The most significant, obvious swing highs and lows on a given timeframe — the major turning points visible when zoomed out. A break of external structure is a highly significant event marking a major directional shift.</p>
+  </div>
+  <div class="card card-blue">
+    <div class="card-label">Internal Structure</div>
+    <div class="card-title">The Minor Swing Points</div>
+    <p>Smaller, shorter-term swing points that form within a larger external swing. A market can be in an external bullish trend while internally retracing with minor bearish structure. Our entry signals come from breaks of <em>internal structure</em> on the LTF — these are the precise moments we target.</p>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-box-title">Structure Rules</div>
+    <ul class="rule-list">
+      <li>Always determine structure on Weekly, Daily, and 4H before opening a 5M chart</li>
+      <li>Only take longs in bullish HTF structure. Only take shorts in bearish HTF structure.</li>
+      <li>A BOS on the LTF in the direction of the HTF trend is a valid entry signal — as part of the Full Stack</li>
+      <li>The more timeframes that agree on structure, the stronger the setup</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 3 ════════════════════════════ -->
+
+<div class="page" id="ch3">
+  <div class="ch-header">
+    <div class="ch-num-big">03</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Three — Foundation</div>
+      <div class="ch-title">The Liquidity Engine</div>
+      <p class="ch-intro">Liquidity is the heartbeat of this entire strategy. Not support and resistance. Not patterns. Liquidity. Once you understand how and why the market hunts it, every chart will tell you a completely different story.</p>
+    </div>
+  </div>
+
+  <h3>What Is Liquidity in Trading?</h3>
+  <p>Liquidity refers to <strong>clusters of pending orders sitting in the market at specific price levels</strong>. These exist because retail traders place their stops and pending entries at predictable, obvious levels. If a million retail traders all learned "put your stop below support," then a massive concentration of orders clusters at that exact level. That clustering <em>is the liquidity</em> — and the market moves to collect it.</p>
+
+  <h3>Buy-Side & Sell-Side Liquidity</h3>
+  <div class="g2">
+    <div class="card card-green">
+      <div class="card-label">Buy-Side Liquidity (BSL)</div>
+      <div class="card-title">Liquidity Above Highs</div>
+      <p>Located <strong>above</strong> swing highs, equal highs, and session highs. Contains: stop-losses from short sellers + buy-stop orders from breakout traders. When swept: the institution fills its <em>sell</em> position using the surge of buy orders. Price then drops sharply. BSL sweep = look for shorts.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-label">Sell-Side Liquidity (SSL)</div>
+      <div class="card-title">Liquidity Below Lows</div>
+      <p>Located <strong>below</strong> swing lows, equal lows, and session lows. Contains: stop-losses from long holders + sell-stop orders from breakdown traders. When swept: institution fills its <em>buy</em> position using the surge of sell orders. Price then rallies sharply. SSL sweep = look for longs.</p>
+    </div>
+  </div>
+
+  <h3>The Flush — The Central Event</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Flush</div>
+    <div class="def-box-also">Unique to This System — Also: Liquidity Sweep / Stop Hunt / Liquidity Raid</div>
+    <p>The Flush is the engineered move where price spikes through a key liquidity level — sweeping all the stops and pending orders resting there — and then closes back on the other side within one to three candles. The wick that penetrated the level <em>is the flush</em>. It represents the moment when all orders at that level were collected, the institutional position was filled, and price is now free to move in the real intended direction. The Flush is the central event of the entire strategy. Everything before it is preparation. Everything after it is execution.</p>
+  </div>
+
+  <h4>What Makes a Flush Valid?</h4>
+  <ul class="rule-list" style="margin:16px 0 24px">
+    <li>The level swept must be a significant liquidity pool — not a random minor candle wick</li>
+    <li>Price must close back on the other side within 1-3 candles — a slow drift through is a breakout, not a flush</li>
+    <li>The flush direction must be <em>against</em> The Current temporarily — collecting liquidity before reversing with the trend</li>
+    <li>A BOS or CHOCH in the direction of The Current must follow the flush on the LTF</li>
+  </ul>
+
+  <h3>Liquidity Pool Tiers</h3>
+  <div class="card">
+    <div class="card-label">Tier 1 — Highest Priority</div>
+    <div class="card-title">Previous Day High & Low (PDH / PDL)</div>
+    <p>The most universally watched levels in indices. Every algorithm, every institution, every retail trader tracks PDH and PDL. The concentration of orders at these levels is enormous. A Flush of PDH or PDL at the NY open is one of the cleanest, most reliable setups in the strategy. Mark these without exception every single morning.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Tier 1 — Highest Priority</div>
+    <div class="card-title">London Session High & Low</div>
+    <p>The high and low created during the 3:00 AM–8:30 AM London session. The NY open at 9:30 very frequently runs directly to sweep the London high or low before making the real directional move. This is one of the most consistent patterns in indices trading. When you see NY open moving straight toward the London extreme — that is The Flush setting up.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Tier 1 — Highest Priority</div>
+    <div class="card-title">Foundation Range High & Low (Asia)</div>
+    <p>The Asia session (midnight–6:00 AM EST) creates The Foundation Range. Hours of quiet, low-volume trading deposit layer upon layer of stop-losses at the Asia high and low. By the time NY opens, these levels can contain significant institutional interest. Often the NY open sweeps the Foundation Range AND the London low/high simultaneously — creating a double-confluence Flush that is extremely high quality.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Tier 2 — High Priority</div>
+    <div class="card-title">Equal Highs & Equal Lows</div>
+    <p>Two or more price touches at approximately the same level. Retail traders see "double top/bottom" and expect reversal. What is actually happening: each touch deposits another layer of stops directly above or below. The market will almost always sweep these equal levels before moving directionally. Mark all equal highs and lows on your charts — they are Flush magnets.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Tier 2 — High Priority</div>
+    <div class="card-title">Previous Week High & Low</div>
+    <p>Five days of accumulated orders at the weekly extremes. A Flush of the weekly high or low is a significant event that often precedes multi-day directional moves. These carry more institutional weight than daily levels.</p>
+  </div>
+
+  <h3>The Magnetic Target — Draw on Liquidity</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Magnetic Target</div>
+    <div class="def-box-also">Unique to This System — Also: Draw on Liquidity (DOL) — ICT Terminology</div>
+    <p>Price doesn't just move — it moves <em>toward something</em>. The Magnetic Target is the nearest, most obvious pool of liquidity in the direction of your trade. The market is literally pulled toward it — it cannot ignore a large nearby pool of orders. Before entering any trade, you must identify The Magnetic Target clearly and be able to point to it on the chart with full conviction. It is your primary take-profit level. Without a clear Magnetic Target, there is no trade.</p>
+  </div>
+
+  <div class="alert"><strong>Common mistake:</strong> Trying to trade every flush you see. Only trade flushes that (1) align with The Current, (2) occur at a Tier 1 or Tier 2 level, and (3) have a clear Magnetic Target. Anything less is noise.</div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 4 ════════════════════════════ -->
+
+<div class="page" id="ch4">
+  <div class="ch-header">
+    <div class="ch-num-big">04</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Four — Foundation</div>
+      <div class="ch-title">ICT Concepts — The Building Blocks</div>
+      <p class="ch-intro">These are the precise technical tools for identifying entry zones, understanding price delivery, and refining execution. Learn each one thoroughly — they form the vocabulary of everything that follows.</p>
+    </div>
+  </div>
+
+  <h3>Fair Value Gap (FVG)</h3>
+  <div class="def-box">
+    <div class="def-box-term">Fair Value Gap</div>
+    <div class="def-box-also">FVG — Standard ICT Terminology. Also: Imbalance, Inefficiency</div>
+    <p>A three-candle formation where the middle candle moves so aggressively that a gap is created between the high of candle 1 and the low of candle 3 (bullish FVG), or between the low of candle 1 and the high of candle 3 (bearish FVG). This gap is an area of price that was never traded — an imbalance. The market tends to return to these areas to fill the imbalance before continuing in the original direction. FVGs on higher timeframes (4H, Daily) are premium entry zones when price returns to them.</p>
+  </div>
+
+  <h4>Inversion FVG — The Primary Entry Zone</h4>
+  <div class="def-box">
+    <div class="def-box-term">Inversion FVG</div>
+    <div class="def-box-also">Standard ICT Terminology — A Primary Entry Signal in This System</div>
+    <p>An Inversion FVG forms when a previously bullish FVG gets violated to the downside, and then price returns to that same area — which now acts as resistance. Or a previously bearish FVG gets violated upward, and the area becomes support. After The Flush, we hunt for inversion FVGs on the 5M and 1M charts as our entry zone. The inversion FVG is the area where we place our limit orders — it is where the structural shift is confirmed at a precise price level.</p>
+  </div>
+
+  <h3>Order Blocks (OB)</h3>
+  <div class="def-box">
+    <div class="def-box-term">Order Block</div>
+    <div class="def-box-also">OB — Standard ICT Terminology</div>
+    <p>The last candle moving in the opposite direction before a significant impulse move in the other direction. A <strong>bullish Order Block</strong> is the last bearish candle before a strong bullish impulse — institutions placed buy orders there. A <strong>bearish Order Block</strong> is the last bullish candle before a strong bearish impulse — institutions placed sell orders there. When price returns to these levels, those orders are still resting, creating a high-probability reaction zone. An OB that also contains an FVG is an especially high-quality level.</p>
+  </div>
+
+  <h3>Premium and Discount</h3>
+  <p>Between any two significant swing points, there is a midpoint — the 50% level. <strong>Premium</strong> is above the midpoint (expensive). <strong>Discount</strong> is below it (cheap).</p>
+  <div class="g2">
+    <div class="card card-green">
+      <div class="card-label">Discount Zone</div>
+      <div class="card-title">Buy Here (Bullish Context)</div>
+      <p>In a bullish setup, enter longs in discount — price is cheap relative to the range and likely to go up. Entering in premium on a long is chasing. Poor execution.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-label">Premium Zone</div>
+      <div class="card-title">Sell Here (Bearish Context)</div>
+      <p>In a bearish setup, enter shorts in premium — price is expensive and likely to fall. Entering a short in discount is selling cheap. Poor execution.</p>
+    </div>
+  </div>
+  <div class="tip"><strong>Practical application:</strong> When your inversion FVG or OB sits in the correct zone (discount for longs, premium for shorts), the entry quality is significantly higher. This is a filter for the best setups.</div>
+
+  <h3>NWOG — New Week Opening Gap</h3>
+  <div class="def-box">
+    <div class="def-box-term">New Week Opening Gap</div>
+    <div class="def-box-also">NWOG — Standard ICT Terminology</div>
+    <p>When futures open Sunday evening at 6:00 PM EST, there is frequently a gap between Friday's close and Sunday's open. This NWOG acts as a powerful weekly Magnetic Target — the market has a very strong tendency to fill it at some point during the week. Always mark the NWOG on your weekly chart early in the week. A gap above is a bullish draw; a gap below is a bearish draw.</p>
+  </div>
+
+  <h3>Optimal Trade Entry (OTE)</h3>
+  <div class="def-box">
+    <div class="def-box-term">Optimal Trade Entry</div>
+    <div class="def-box-also">OTE — Standard ICT Terminology</div>
+    <p>A Fibonacci-based concept identifying the ideal retracement zone after an impulse move. After The Flush creates a strong impulse, price often retraces. The OTE zone is the 61.8%–79% Fibonacci retracement of that impulse. Institutions re-enter their positions here — "reloading" at a better price. When your inversion FVG sits within the OTE zone, the entry is extremely high quality. On TradingView: draw Fibonacci retracement from the flush low to the first impulse high (for longs). The 61.8–79% zone is your OTE entry area.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 5 ════════════════════════════ -->
+
+<div class="page" id="ch5">
+  <div class="ch-header">
+    <div class="ch-num-big">05</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Five — Methodology</div>
+      <div class="ch-title">The HTF Map — Top-Down Analysis</div>
+      <p class="ch-intro">The Current is your directional bias — the higher timeframe flow everything is built upon. Getting this right is 80% of the work. A perfect entry in the wrong direction is still a losing trade.</p>
+    </div>
+  </div>
+
+  <h3>The Current</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Current</div>
+    <div class="def-box-also">Unique to This System — Also: HTF Bias, Directional Bias</div>
+    <p>The directional flow of the market on higher timeframes — the force everything else is moving with or against. Just as you swim with a river's current rather than fighting it, you trade with The Current, never against it. A bullish Current means HTF structure is making higher highs and higher lows, the major draw is on buy-side liquidity above, and you are exclusively looking for longs. Determining The Current accurately every morning is the single most important step in your preparation.</p>
+  </div>
+
+  <h3>The Top-Down Analysis Flow</h3>
+  <p>Always analyze from the highest timeframe down. Never start with a 5-minute chart and then justify a trade on the higher timeframes.</p>
+
+  <div class="flow">
+    <div class="flow-step active"><div class="flow-num">W</div><div class="flow-body"><div class="flow-title">Weekly — The Big Picture</div><div class="flow-desc">Macro direction. Weekly highs and lows. Most recent weekly FVG and OB. Weekly Magnetic Target. This sets overarching context that nothing else can override.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">D</div><div class="flow-body"><div class="flow-title">Daily — The Current Conditions</div><div class="flow-desc">Daily structure — HH/HL or LH/LL? Did yesterday close bullish or bearish? PDH and PDL. Active daily FVGs. Daily OBs. This is the primary timeframe for establishing The Current.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">4H</div><div class="flow-body"><div class="flow-title">4-Hour — Medium-Term Confirmation</div><div class="flow-desc">Confirm the daily bias. Is 4H structure aligned? Active 4H FVGs and OBs. The 4H bridges the macro view with the trading session.</div></div></div>
+    <div class="flow-step"><div class="flow-num">2H</div><div class="flow-body"><div class="flow-title">2H / 1H — Session Context</div><div class="flow-desc">How has the current day developed? What did London create? 1H FVGs. This is where you see the full Foundation Range and London session clearly.</div></div></div>
+    <div class="flow-step"><div class="flow-num">30</div><div class="flow-body"><div class="flow-title">30-Minute — Setup Timeframe</div><div class="flow-desc">The Window is forming. Asia range and London move are clear. Confirm the specific liquidity levels NY is likely to target. Identify the most probable Flush level.</div></div></div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-body"><div class="flow-title">5-Minute — Execution Timeframe</div><div class="flow-desc">Where The Flush happens. Where you watch for BOS and inversion FVG. Once HTF work is done, you sit on 5M and wait. This is The Window timeframe.</div></div></div>
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-body"><div class="flow-title">1-Minute — Precision Entry (Optional)</div><div class="flow-desc">For tighter entries within the inversion FVG zone. Better R:R, requires more experience. Start with 5M, progress to 1M once setup identification is consistent.</div></div></div>
+  </div>
+
+  <h3>The Read — Morning Preparation Ritual</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Read</div>
+    <div class="def-box-also">Unique to This System — Pre-Market Analysis Ritual</div>
+    <p>The Read is the 15–20 minute morning preparation session you complete every trading day before 9:00 AM. It is the act of marking all key levels, determining The Current, and identifying the Magnetic Target for the day. Without The Read, you are entering The Window blind. The Read is not optional — it is the foundation of every trade you will take.</p>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-box-title">The Read Checklist — Complete Every Morning Before 9:00 AM</div>
+    <ul class="rule-list">
+      <li>Weekly High and Low (current week)</li>
+      <li>Previous Week High and Low</li>
+      <li>Previous Day High (PDH) and Previous Day Low (PDL)</li>
+      <li>Active Fair Value Gaps on Daily and 4H</li>
+      <li>Key Order Blocks on Daily and 4H</li>
+      <li>Foundation Range High and Low (Asia session: midnight–6:00 AM EST)</li>
+      <li>London Session High and Low (3:00 AM–8:30 AM EST)</li>
+      <li>NWOG if early in the week</li>
+      <li>Major round/psychological numbers nearby</li>
+      <li><strong>The Current: write down Bullish or Bearish and why</strong></li>
+      <li><strong>The Magnetic Target: write down the specific level and why</strong></li>
+    </ul>
+  </div>
+
+  <h3>Determining The Current — Step by Step</h3>
+  <div class="flow">
+    <div class="flow-step active"><div class="flow-num">1</div><div class="flow-body"><div class="flow-title">Weekly trend direction</div><div class="flow-desc">Higher highs and higher lows (bullish) or lower highs and lower lows (bearish)? Note this.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">2</div><div class="flow-body"><div class="flow-title">Does the daily agree?</div><div class="flow-desc">Is daily structure aligned with weekly? Strong confirmation if yes. If they disagree, wait for clarity or do not trade.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">3</div><div class="flow-body"><div class="flow-title">Where is the daily Magnetic Target?</div><div class="flow-desc">The most obvious liquidity pool in the direction of the daily trend. PDH/PDL? Daily FVG? Weekly high/low? This is where the market is drawing toward today.</div></div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-body"><div class="flow-title">Does the 4H confirm?</div><div class="flow-desc">Is 4H structure aligned? If the 4H is in a retracement against the daily trend, you may need to wait for it to complete before the setup forms.</div></div></div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-body"><div class="flow-title">What did London do?</div><div class="flow-desc">Did London trend with The Current or create a counter-trend move? A London move against The Current is a prime setup for NY to flush it and continue the original direction.</div></div></div>
+    <div class="flow-step"><div class="flow-num">6</div><div class="flow-body"><div class="flow-title">Commit and write it down</div><div class="flow-desc">Write in your journal: "The Current is BULLISH / BEARISH. My Magnetic Target is [level]. Looking for longs / shorts." Written commitment stops mid-session flip-flopping.</div></div></div>
+  </div>
+
+  <div class="alert"><strong>When The Current is unclear:</strong> The answer is simple — you do not trade. A day with no clear Current is <span class="term">Dead Water</span>. Sit on your hands. Protect your capital on uncertain days. That is a skill, not a weakness.</div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 6 ════════════════════════════ -->
+
+<div class="page" id="ch6">
+  <div class="ch-header">
+    <div class="ch-num-big">06</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Six — Methodology</div>
+      <div class="ch-title">Asia & London Sessions — Reading the Setup</div>
+      <p class="ch-intro">The Asia and London sessions are not just time periods — they are the architectural foundation upon which the NY open trade is built every single day. Understanding what these sessions do and why gives you a massive edge before the NY bell even rings.</p>
+    </div>
+  </div>
+
+  <h3>The Foundation Range — Asia Session</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Foundation Range</div>
+    <div class="def-box-also">Unique to This System — Also: Asia Range, Midnight Range, Killzone Range</div>
+    <p>The price range created during the Asia session — roughly midnight to 6:00 AM EST. This session is characterized by low volume, narrow price movement, and accumulation. The market is resting. But in that rest, every hour of ranging deposits stop-losses at the session high and low. Retail traders who trade Asia place their stops just outside the range. By the time London and NY arrive, the Foundation Range high and low are packed with orders — making them prime Flush targets. Mark the Foundation Range high and low every single morning without exception.</p>
+  </div>
+
+  <h4>Why It's Called The Foundation</h4>
+  <p>Think architecturally: Asia sets the foundation. London and NY build on top of it. Without understanding what Asia built, you're trying to understand a building without seeing its base. The Foundation Range high and low are the first levels you mark after midnight. They give the initial framework for where the first flushes of the day might occur.</p>
+
+  <h3>The London Session</h3>
+  <p>London (3:00 AM–8:30 AM EST) is the first major liquidity event of the day. It does one of two things:</p>
+  <div class="g2">
+    <div class="card card-green">
+      <div class="card-label">Scenario A</div>
+      <div class="card-title">London Continues The Current</div>
+      <p>London moves in the direction of the daily bias, creating a clean directional move and building up opposite-side liquidity. Bullish Current: London rallies, creating sell-side liquidity below the London low. NY sweeps the London low (The Flush) and continues up.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-label">Scenario B</div>
+      <div class="card-title">London Creates a False Move</div>
+      <p>London moves against The Current — drawing in retail traders betting on a reversal. NY then flushes the London extreme and continues in The Current's direction. This is actually the more common and profitable scenario for NY traders. The false London move sets up the NY trade perfectly.</p>
+    </div>
+  </div>
+
+  <h3>The Classic NY Open Pattern</h3>
+  <div class="flow">
+    <div class="flow-step active"><div class="flow-num">1</div><div class="flow-body"><div class="flow-title">London creates a clear high and low</div><div class="flow-desc">These levels are now packed with liquidity. The stage is set.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">2</div><div class="flow-body"><div class="flow-title">9:30 — NY opens with a spike</div><div class="flow-desc">Price makes an immediate aggressive move — often against the current intraday direction — heading toward a key liquidity level.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">3</div><div class="flow-body"><div class="flow-title">The Flush — London level is taken</div><div class="flow-desc">Price spikes through the London high or low, sweeps all stops, creates a wick, and then immediately reverses. The institutional fill happens here.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">4</div><div class="flow-body"><div class="flow-title">BOS on the 5M chart</div><div class="flow-desc">Price breaks a minor swing point in the direction of The Current — confirming the flush is complete and the real move is beginning.</div></div></div>
+    <div class="flow-step active"><div class="flow-num">5</div><div class="flow-body"><div class="flow-title">Entry at inversion FVG</div><div class="flow-desc">Price may pull back slightly to the inversion FVG zone at The Flush area. This is the entry. Tight stop. Magnetic Target set.</div></div></div>
+    <div class="flow-step"><div class="flow-num">6</div><div class="flow-body"><div class="flow-title">Move to the Magnetic Target</div><div class="flow-desc">The real directional move begins. Price moves toward the daily Magnetic Target — PDH/PDL, weekly level, or daily FVG. Take profits.</div></div></div>
+  </div>
+
+  <div class="tip"><strong>Important:</strong> Keep your charts open from 9:00 AM — not just 9:30 AM. The flush can begin building in the pre-market minutes before the official bell. Being there at 9:00 AM means you're ready. Being there at 9:30 AM means you might already be late.</div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 7 ════════════════════════════ -->
+
+<div class="page" id="ch7">
+  <div class="ch-header">
+    <div class="ch-num-big">07</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Seven — Entry Execution</div>
+      <div class="ch-title">The NY Open — Entry Execution</div>
+      <p class="ch-intro">This is the chapter everything builds toward. Nine chapters of preparation for one hour of execution. Every concept — liquidity, structure, FVGs, sessions — was preparing you for this moment. Here is the complete step-by-step execution of the strategy, from the first candle of the NY open all the way to the moment you close your trade.</p>
+    </div>
+  </div>
+
+  <h3>The Core Setup In One Sentence</h3>
+  <div class="def-box">
+    <div class="def-box-term">The Setup</div>
+    <div class="def-box-also">The complete sequence — memorize this</div>
+    <p>Identify your HTF bias and daily liquidity target → wait for the NY open to sweep a key liquidity level → drop to 5M and confirm a Break of Structure → drop to 2M or 1M and find the inversion FVG → enter at the inversion FVG with stop beyond the sweep wick → target the next major liquidity pool. That's it. Everything in this chapter is the detailed explanation of each of those steps.</p>
+  </div>
+
+  <h3>The Four Conditions — All Must Be Present</h3>
+
+  <div class="card card-blue">
+    <div class="card-label">Condition 1</div>
+    <div class="card-title">Clear HTF Directional Bias</div>
+    <p>Before 9:30 AM, you must know whether you are looking for longs or shorts. Daily and 4H structure must both be clearly bullish or bearish. You must be able to write one sentence in your journal: "Today I am looking for <strong>longs / shorts</strong> because the daily and 4H are both making <strong>higher highs and higher lows / lower highs and lower lows</strong>." If you cannot write that sentence clearly, you do not trade today.</p>
+  </div>
+
+  <div class="card card-red">
+    <div class="card-label">Condition 2</div>
+    <div class="card-title">Liquidity Sweep at a Key Level</div>
+    <p>A spike through a significant liquidity level — London high or low, Asia range high or low, PDH/PDL, equal highs or lows, or weekly high/low — that closes back on the other side within 1-3 candles. The sweep must be in the <em>opposite</em> direction of your HTF bias temporarily. A bullish bias needs a sell-side sweep (price spikes below a low). A bearish bias needs a buy-side sweep (price spikes above a high). If the sweep is in the same direction as your bias without sweeping opposite-side liquidity first, wait.</p>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-label">Condition 3</div>
+    <div class="card-title">BOS on 5M + Inversion FVG on 2M/1M</div>
+    <p>After the sweep: a Break of Structure on the 5M chart in the direction of your bias (price closes above the last 5M swing high for longs, or below the last 5M swing low for shorts). Then drop to the 2M or 1M chart and find the inversion FVG that formed in the area of the sweep. This is your entry zone. Both the BOS and the inversion FVG must be present — the BOS tells you the direction changed, the inversion FVG tells you exactly where to enter.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Condition 4</div>
+    <div class="card-title">Clear Draw on Liquidity (Your Target)</div>
+    <p>You must identify your take-profit target before you enter the trade. Not after — before. Look at the next obvious pool of liquidity in the direction of your trade: the nearest PDH or PDL you haven't hit yet, equal highs or lows in your direction, the previous week high or low, or an unfilled daily FVG above or below. If there is no clear, obvious target nearby, the trade has no destination — and you don't take it.</p>
+  </div>
+
+  <h3>SMT Divergence — The Premium Confirmation</h3>
+  <div class="def-box">
+    <div class="def-box-term">SMT Divergence</div>
+    <div class="def-box-also">Smart Money Technique — ICT Terminology. The premium signal that upgrades any setup.</div>
+    <p>SMT divergence happens when NQ (NASDAQ futures) and ES (S&P 500 futures) fail to confirm each other's move at a key moment. These two instruments are correlated — they should move together. When they diverge, it reveals that one instrument's move is not genuine. Specifically: if NQ makes a new high at the sweep but ES does not make a corresponding new high, the NQ high is fake. The institutional selling is already happening in ES while NQ is still being pushed up to collect buy-stops. The divergence is the signal. When SMT is present alongside a sweep and BOS, you have the highest possible quality setup — enter with full confidence and maximum position size.</p>
+  </div>
+
+  <h4>How to Use SMT Divergence on TradingView</h4>
+  <ul class="rule-list" style="margin:16px 0 24px">
+    <li>Open TradingView and use the "Compare" function — add NQ to the ES chart (or vice versa) so both plot on the same chart</li>
+    <li>Alternatively, use the split-screen layout: NQ on the left panel, ES on the right panel, both on the 5M timeframe</li>
+    <li>At 9:30 AM when the sweep happens, look at both simultaneously: did NQ make a new high/low that ES did not match?</li>
+    <li>The divergence must be visually obvious — not a few ticks difference, but a clear and significant separation between the two instruments at the same moment</li>
+    <li>Bearish SMT: NQ makes a new high (sweeping buy-side), ES does not → short signal</li>
+    <li>Bullish SMT: NQ makes a new low (sweeping sell-side), ES does not → long signal</li>
+    <li>You can also use YM (Dow Jones) as a third reference instrument for additional confirmation</li>
+  </ul>
+
+  <h3>The Timeframe Drill-Down — From 5M to 1M</h3>
+  <p>Most traders make the mistake of trying to find their entry on the 5M chart. The 5M gives you the structural confirmation (BOS), but the actual entry precision comes from going lower — to the 2M and 1M charts. Here is why this matters, and exactly how to do it.</p>
+
+  <div class="card">
+    <div class="card-label">Step 1 — 5M Chart</div>
+    <div class="card-title">Confirm the BOS on 5M</div>
+    <p>After the sweep, stay on the 5M chart and wait for price to break structure. For a long: wait for a 5M candle to close above the most recent 5M swing high. For a short: wait for a 5M candle to close below the most recent 5M swing low. This BOS tells you the direction of the sweep has ended and the reversal has begun. Do NOT enter here — this is confirmation, not the entry. The entry comes on a lower timeframe.</p>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-label">Step 2 — 2M Chart</div>
+    <div class="card-title">Find the Inversion FVG on 2M</div>
+    <p>After the 5M BOS, switch to the 2M chart. You are looking for the inversion FVG that formed during the sweep and the initial recovery move. On the 2M chart, the sweep candle and the first few recovery candles will have created imbalances. Find the FVG that now represents the inversion zone — this is an area where the market was moving so fast in one direction that price never traded there before reversing. When price retraces into this zone, that is the entry. The 2M inversion FVG is typically the best balance between precision and reliability.</p>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-label">Step 3 — 1M Chart (Optional — Advanced)</div>
+    <div class="card-title">Refine Entry on 1M for Maximum Precision</div>
+    <p>If you want the tightest possible stop-loss and best possible R:R, drop to the 1M chart after identifying the 2M inversion FVG zone. On the 1M, you will see the FVG more precisely — you can identify the exact upper or lower boundary of the zone where price is most likely to react. Enter at the 1M inversion FVG boundary with a limit order, or on the 1M BOS candle close. This technique can improve your R:R from 3:1 to 5:1 or better on the same setup because your stop is much tighter. Start with 2M entries. Only move to 1M once you are consistently profitable on 2M.</p>
+  </div>
+
+  <div class="tip">
+    <strong>The golden rule of the drill-down:</strong> You read the market top-down (Weekly → Daily → 4H → 1H → 30M) to determine bias and key levels. You execute bottom-up: 5M confirms the BOS, 2M gives the inversion FVG entry zone, 1M refines the exact entry price. Never determine your bias on the 1M. Never try to enter on the 5M without the 2M or 1M refinement.
+  </div>
+
+  <h3>Exact Entry Mechanics — Where to Place the Order</h3>
+
+  <h4>For Long Trades (after a sell-side sweep)</h4>
+  <div class="rule-box">
+    <div class="rule-box-title">Long Entry — Step by Step</div>
+    <ul class="rule-list">
+      <li><strong>Confirm:</strong> Sell-side sweep on a key level (price wicked below and closed back above) on 5M/1M</li>
+      <li><strong>Confirm:</strong> 5M BOS — a 5M candle closed above the most recent 5M swing high</li>
+      <li><strong>Switch to 2M:</strong> Identify the bullish inversion FVG that formed during the sweep and initial recovery. This FVG is in the area where the sweep wick was — below the BOS level.</li>
+      <li><strong>Entry:</strong> Place a limit buy order at the midpoint or lower boundary of the inversion FVG on 2M (or 1M for precision). Do not market-buy into price — wait for the retracement into the FVG.</li>
+      <li><strong>If price doesn't retrace:</strong> If price moves strongly away from the FVG and never retraces, the trade is missed. Do not chase. The next setup will come.</li>
+    </ul>
+  </div>
+
+  <h4>For Short Trades (after a buy-side sweep)</h4>
+  <div class="rule-box">
+    <div class="rule-box-title">Short Entry — Step by Step</div>
+    <ul class="rule-list">
+      <li><strong>Confirm:</strong> Buy-side sweep on a key level (price wicked above and closed back below) on 5M/1M</li>
+      <li><strong>Confirm:</strong> 5M BOS — a 5M candle closed below the most recent 5M swing low</li>
+      <li><strong>Switch to 2M:</strong> Identify the bearish inversion FVG in the area of the sweep. This zone is above the BOS level — where the price was during the sweep before reversing.</li>
+      <li><strong>Entry:</strong> Place a limit sell order at the midpoint or upper boundary of the inversion FVG on 2M or 1M. Wait for price to retrace up into this zone before filling.</li>
+      <li><strong>Alternative entry:</strong> If the inversion FVG is not visible or price is moving too fast, you can enter on the close of the 5M BOS candle — this is a less precise but still valid entry. Size down slightly when entering this way.</li>
+    </ul>
+  </div>
+
+  <h3>Stop-Loss Placement — Exact Rules</h3>
+  <p>The stop-loss in this strategy is not placed at a "comfortable" distance or at a round number. It is placed at a specific, logical level that tells you definitively that the setup has failed. Here is exactly where it goes:</p>
+
+  <div class="g2">
+    <div class="card card-green">
+      <div class="card-label">Long Trade Stop-Loss</div>
+      <div class="card-title">Below the Sweep Wick Low</div>
+      <p>Your stop goes <strong>2-5 ticks below the absolute lowest wick</strong> of the sell-side sweep candle on the timeframe you traded. If the sweep wick on the 1M chart went to 21,340 — your stop is at 21,335 or 21,336. Not at 21,320. Not at "below this support zone." Exactly below the wick with a small buffer. The logic: if price goes back below that wick, the sweep failed, the setup is invalid, and you need to be out immediately. The tighter the stop, the better the R:R — but you must give it enough room that normal wick noise doesn't stop you out.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-label">Short Trade Stop-Loss</div>
+      <div class="card-title">Above the Sweep Wick High</div>
+      <p>Your stop goes <strong>2-5 ticks above the absolute highest wick</strong> of the buy-side sweep candle. If the sweep wick went to 21,580 — your stop is at 21,583 or 21,585. Not at "above resistance." Exactly above the wick with a small buffer. If price goes back above that wick, the buy-side sweep failed to create a reversal — the market is actually breaking out upward and your short thesis is wrong. Exit immediately at a small loss before it becomes a large one.</p>
+    </div>
+  </div>
+
+  <div class="alert">
+    <strong>The most common stop-loss mistake:</strong> Placing the stop too far away because you are "afraid of being stopped out." A wider stop means a worse R:R, which means you need to win more often to be profitable. The sweep wick is not chosen arbitrarily — it is the exact level where the institutional order was placed. If the market goes back through that level, the institution changed its mind, and you should too.
+  </div>
+
+  <h3>Take-Profit Placement — Where to Exit</h3>
+  <p>This is where beginners consistently leave money on the table. They exit too early out of fear, or they hold too long and watch a winner turn into a loser. Here is the exact framework for taking profits.</p>
+
+  <h4>Identifying Your Target Before Entry</h4>
+  <p>Before you place the entry order, you must already know your take-profit target. Look at your chart and identify the nearest significant liquidity pool in the direction of your trade. This is your primary target. The most common target types, in order of priority:</p>
+
+  <div class="data-table-wrap" style="margin:20px 0; overflow-x:auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Target Type</th>
+          <th>Description</th>
+          <th>Priority</th>
+          <th>How to Identify</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PDH / PDL</td>
+          <td>Previous Day High or Low — the single most watched level in daily trading</td>
+          <td><span class="c-gold">Tier 1</span></td>
+          <td>Mark the high and low of yesterday's session. Use the regular trading hours (9:30 AM–4 PM) close, not overnight.</td>
+        </tr>
+        <tr>
+          <td>Equal Highs / Lows</td>
+          <td>Two or more touches at the same level — dense pool of stops sitting there</td>
+          <td><span class="c-gold">Tier 1</span></td>
+          <td>Look for horizontal clusters of wicks or bodies at the same price on the 1H/4H chart</td>
+        </tr>
+        <tr>
+          <td>London High / Low</td>
+          <td>The session extreme that wasn't swept yet — still full of orders</td>
+          <td><span class="c-gold">Tier 1</span></td>
+          <td>Mark the high and low of the 3AM–8:30AM window before the NY open</td>
+        </tr>
+        <tr>
+          <td>Asia High / Low</td>
+          <td>Foundation Range extreme that hasn't been swept</td>
+          <td><span class="c-gold">Tier 1</span></td>
+          <td>Mark the high and low of midnight–6AM session</td>
+        </tr>
+        <tr>
+          <td>Previous Week High / Low</td>
+          <td>Major weekly liquidity — significant institutional interest</td>
+          <td><span class="c-blue">Tier 2</span></td>
+          <td>Mark last week's absolute high and low on the daily chart</td>
+        </tr>
+        <tr>
+          <td>Daily FVG</td>
+          <td>An unfilled imbalance on the daily chart — price tends to fill these</td>
+          <td><span class="c-blue">Tier 2</span></td>
+          <td>Identify three-candle patterns on the daily chart with a gap between candle 1 wick and candle 3 wick</td>
+        </tr>
+        <tr>
+          <td>4H Order Block</td>
+          <td>Institutional level on 4H — significant reaction zone</td>
+          <td><span class="c-blue">Tier 2</span></td>
+          <td>Last bearish candle before strong bullish impulse (for buys), or last bullish candle before strong bearish impulse (for sells)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>The Two-Target System</h4>
+  <p>Do not close your entire position at one level. Use a two-target system to both lock in profit and allow the trade to reach its full potential:</p>
+
+  <div class="g2">
+    <div class="stat-box">
+      <div class="stat-box-label">Take-Profit 1 (TP1) — 50% of position</div>
+      <div class="stat-box-value c-green">First Pool</div>
+      <div class="stat-box-sub" style="margin-top:12px">The <em>nearest</em> significant liquidity pool in your direction. This might be a minor swing point, the Foundation Range level on the opposite side, or the first FVG above/below. Close half your position here. Immediately after, move your stop-loss to your entry price (breakeven). You are now risk-free on the remainder of the trade.</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-label">Take-Profit 2 (TP2) — remaining 50%</div>
+      <div class="stat-box-value c-gold">Main Target</div>
+      <div class="stat-box-sub" style="margin-top:12px">The primary liquidity pool you identified before entry — the PDH/PDL, weekly level, or daily FVG. This is the full draw on liquidity. Let this runner work. Since your stop is at breakeven, the worst outcome is breaking even on the second half. Give it time and space to reach the full target.</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>When to consider a third target:</strong> If the market is trending very strongly and your TP2 is hit but there is still another significant liquidity pool beyond it, you can trail a small portion (10-15% of original size) with a trailing stop to capture extended moves. Only do this if the market has clearly entered a strong trend day and the Daily FVG or weekly level is still unfilled significantly above/below. This is advanced — master the two-target system first.
+  </div>
+
+  <h3>The Complete Execution — Every Step in Order</h3>
+
+  <div class="flow">
+    <div class="flow-step active">
+      <div class="flow-num">1</div>
+      <div class="flow-body">
+        <div class="flow-title">Pre-Market: Complete The Read by 9:00 AM</div>
+        <div class="flow-desc">Mark all levels: weekly high/low, PDH/PDL, Asia high/low, London high/low, daily FVGs, 4H OBs. Write your HTF bias and your target liquidity pool in your journal before the open. Everything is marked. You know what you're watching for.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">2</div>
+      <div class="flow-body">
+        <div class="flow-title">9:00–9:30 AM: Watch On 5M, Do Nothing</div>
+        <div class="flow-desc">Sit on the 5M chart with NQ and ES visible side by side. Watch pre-market price behavior. Is it drifting toward a key level? Is there building momentum in one direction? Observe. Note. Do not trade. The setup has not presented.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">3</div>
+      <div class="flow-body">
+        <div class="flow-title">9:30 AM: The Bell — Watch the First Move</div>
+        <div class="flow-desc">The NY session opens. Price often makes an immediate strong move. Watch which direction. Is it heading toward a key liquidity level? Is the move aggressive (likely a sweep) or slow (likely a trend)? At the same time, look at ES — is it making the same move as NQ, or is it diverging?</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">4</div>
+      <div class="flow-body">
+        <div class="flow-title">Sweep Confirmed — Start the Clock</div>
+        <div class="flow-desc">Price spikes through a key level and a candle closes back on the other side. The sweep is confirmed. Check: (1) Is the swept level aligned with your bias? (2) Is there SMT divergence on ES vs NQ? Now you are on high alert. The next move is the BOS you're waiting for.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">5</div>
+      <div class="flow-body">
+        <div class="flow-title">Wait for the 5M BOS</div>
+        <div class="flow-desc">Watch the 5M chart. For longs: wait for a 5M candle to close above the last 5M swing high. For shorts: wait for a 5M candle to close below the last 5M swing low. Do not jump ahead. This break confirms the direction has changed on the 5M timeframe. This is not your entry — it is your signal to drop to 2M.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">6</div>
+      <div class="flow-body">
+        <div class="flow-title">Drop to 2M — Find the Inversion FVG</div>
+        <div class="flow-desc">Switch to the 2M chart immediately after the 5M BOS. You are looking for the inversion FVG in the area of the sweep — the zone where price moved so fast during the sweep that it left an imbalance. Identify the FVG zone (the gap between candle 1 wick and candle 3 wick on the 2M). This is your entry zone. Zoom in further to 1M if you want more precision.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">7</div>
+      <div class="flow-body">
+        <div class="flow-title">Place Limit Order at the Inversion FVG</div>
+        <div class="flow-desc">Set a limit buy (for longs) or limit sell (for shorts) order at the inversion FVG zone on 2M or 1M. Set your stop-loss 2-5 ticks beyond the extreme of the sweep wick before you confirm the order. Set your TP1 at the nearest liquidity pool. Set your TP2 at the main draw on liquidity. All three levels must be set before the order is confirmed.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">8</div>
+      <div class="flow-body">
+        <div class="flow-title">Price Fills — Confirm and Step Back</div>
+        <div class="flow-desc">Your limit order fills as price retraces into the inversion FVG zone. Confirm the order is in. Verify stop-loss and take-profits are set. Then step back. Your job is done. Do not watch every tick. Do not move your stop. Do not second-guess the entry. The setup was valid, the orders are set, and now the market does its job.</div>
+      </div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-num">9</div>
+      <div class="flow-body">
+        <div class="flow-title">TP1 Hit — Move Stop to Breakeven</div>
+        <div class="flow-desc">When TP1 is hit (50% of position closed), immediately move your stop-loss on the remaining 50% to your original entry price. You are now in a risk-free trade. The worst case is you break even on the second half. Let the remainder run to TP2 without interference.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">10</div>
+      <div class="flow-body">
+        <div class="flow-title">TP2 Hit or Stop — Journal and Close Charts</div>
+        <div class="flow-desc">Whether TP2 is hit for a full win, or the stop at breakeven is triggered for a partial win — the trade is done. Take a screenshot. Write the setup, the reasoning, and the result in your journal. Then close the charts. The Window is closed. Live your life. Come back tomorrow.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>The Inversion FVG — Deep Explanation</h3>
+  <p>Because the inversion FVG is the most precise and important entry signal in this strategy, it deserves a full dedicated explanation. Most traders who struggle with entries are struggling here — they don't identify the inversion FVG correctly, or they don't wait for price to retrace into it.</p>
+
+  <h4>What Exactly Is an Inversion FVG?</h4>
+  <p>During the sweep candle, the market moves so aggressively in one direction that it creates a Fair Value Gap — a zone between candle 1's wick and candle 3's wick that was never traded. Then the BOS happens and price reverses. As price reverses, it will often retrace back into this FVG zone. But now, the polarity of the FVG has flipped — what was a bearish FVG (created by a downward sweep) is now acting as support on the retracement. That is the inversion. Price is "testing" the area where the sweep happened, confirming that the institutional fill at that level is genuine, and then continuing in the new direction.</p>
+
+  <h4>How to Identify It on the 2M Chart</h4>
+  <div class="rule-box">
+    <div class="rule-box-title">Identifying the Inversion FVG — Step by Step</div>
+    <ul class="rule-list">
+      <li>Switch to the 2M chart immediately after the 5M BOS is confirmed</li>
+      <li>Find the sweep candle — the one that created the wick beyond the key level. Note its body and wicks.</li>
+      <li>Look at the candle immediately before and immediately after the sweep candle. There should be a gap between the wick of the pre-sweep candle and the wick of the post-sweep candle. That gap is the FVG.</li>
+      <li>For a bullish setup (sell-side sweep): the FVG is <em>below</em> the BOS level. It will be between the high wick of the candle before the sweep and the low wick of the candle after the sweep recovery.</li>
+      <li>For a bearish setup (buy-side sweep): the FVG is <em>above</em> the BOS level. It sits in the area where the sweep wick extended to before price reversed down.</li>
+      <li>Draw a rectangle on the chart covering the full range of the FVG zone. This is your entry zone. Place your limit order at the midpoint of this rectangle, or at the 50% level of the zone.</li>
+      <li>If the inversion FVG also aligns with the Fibonacci OTE zone (61.8–79% retracement of the initial recovery move), the entry is of exceptional quality.</li>
+    </ul>
+  </div>
+
+  <h4>When the Inversion FVG Doesn't Appear</h4>
+  <p>Sometimes the market moves so fast after the sweep that no significant FVG forms on the 2M chart, or price never retraces into the FVG zone. In this case you have two options:</p>
+  <ul class="rule-list" style="margin:16px 0">
+    <li><strong>Option A — Skip the trade:</strong> If the inversion FVG is not visible or price moves straight away without retracing, the entry opportunity has passed. Do not chase. Wait for the next setup. This is the cleanest decision — the setup was incomplete.</li>
+    <li><strong>Option B — Enter on the 5M BOS candle close:</strong> If the BOS candle on the 5M is exceptionally strong and all other conditions are perfect (clear bias, clear sweep, clear target, SMT divergence), you can enter on the close of the BOS candle itself. Your stop is still beyond the sweep wick. Your position size should be reduced (half your normal size) because the entry is less precise.</li>
+  </ul>
+
+  <hr class="neon-rule">
+
+  <h3>Visual Examples — Reading The Setup</h3>
+  <p>The following diagrams show the exact visual patterns you will see. Study them until recognition is automatic.</p>
+
+  <!-- CHART 1: THE FLUSH -->
+
+  <div class="chart-example">
+    <div class="chart-example-header">
+      <span class="chart-dot red"></span><span class="chart-dot yellow"></span><span class="chart-dot green"></span>
+      <span style="margin-left:8px">EXAMPLE 01 — THE FLUSH (Sell-Side Sweep → Long Entry)</span>
+    </div>
+    <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg" style="background:#090B0D">
+      <line x1="0" y1="60" x2="860" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="120" x2="860" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="180" x2="860" y2="180" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="240" x2="860" y2="240" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <rect x="0" y="0" width="200" height="280" fill="rgba(91,156,246,0.03)"/>
+      <rect x="200" y="0" width="220" height="280" fill="rgba(200,168,75,0.03)"/>
+      <rect x="420" y="0" width="440" height="280" fill="rgba(61,186,120,0.03)"/>
+      <text x="100" y="22" text-anchor="middle" class="chart-label">LONDON SESSION</text>
+      <text x="310" y="22" text-anchor="middle" class="chart-label">PRE-MARKET</text>
+      <text x="640" y="22" text-anchor="middle" class="chart-label">NY OPEN — THE WINDOW</text>
+      <line x1="200" y1="0" x2="200" y2="280" stroke="rgba(91,156,246,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="420" y1="0" x2="420" y2="280" stroke="rgba(200,168,75,0.4)" stroke-width="1.5"/>
+      <line x1="0" y1="220" x2="860" y2="220" stroke="rgba(224,82,82,0.5)" stroke-width="1" stroke-dasharray="6,3"/>
+      <text x="6" y="216" class="chart-label-red">LONDON LOW / SSL</text>
+      <line x1="0" y1="250" x2="860" y2="250" stroke="rgba(224,82,82,0.3)" stroke-width="1" stroke-dasharray="3,5"/>
+      <text x="6" y="246" class="chart-label-red" style="font-size:8px">FOUNDATION RANGE LOW</text>
+      <g fill="#3DBA78">
+        <rect x="20" y="170" width="12" height="35" fill="#3DBA78"/><line x1="26" y1="165" x2="26" y2="205" stroke="#3DBA78" stroke-width="1.5"/>
+        <rect x="40" y="160" width="12" height="30" fill="#3DBA78"/><line x1="46" y1="155" x2="46" y2="190" stroke="#3DBA78" stroke-width="1.5"/>
+        <rect x="60" y="145" width="12" height="25" fill="#1A6B3A"/><line x1="66" y1="142" x2="66" y2="170" stroke="#1A6B3A" stroke-width="1.5"/>
+        <rect x="80" y="135" width="12" height="20" fill="#3DBA78"/><line x1="86" y1="130" x2="86" y2="155" stroke="#3DBA78" stroke-width="1.5"/>
+        <rect x="100" y="128" width="12" height="18" fill="#3DBA78"/><line x1="106" y1="124" x2="106" y2="146" stroke="#3DBA78" stroke-width="1.5"/>
+        <rect x="120" y="125" width="12" height="12" fill="#1A6B3A"/><line x1="126" y1="120" x2="126" y2="137" stroke="#1A6B3A" stroke-width="1.5"/>
+        <rect x="140" y="122" width="12" height="14" fill="#3DBA78"/><line x1="146" y1="118" x2="146" y2="136" stroke="#3DBA78" stroke-width="1.5"/>
+        <rect x="160" y="124" width="12" height="10" fill="#1A6B3A"/><line x1="166" y1="120" x2="166" y2="134" stroke="#1A6B3A" stroke-width="1.5"/>
+        <rect x="180" y="120" width="12" height="16" fill="#3DBA78"/><line x1="186" y1="115" x2="186" y2="136" stroke="#3DBA78" stroke-width="1.5"/>
+      </g>
+      <rect x="230" y="130" width="12" height="14" fill="#1A6B3A"/><line x1="236" y1="127" x2="236" y2="144" stroke="#1A6B3A" stroke-width="1.5"/>
+      <rect x="252" y="135" width="12" height="16" fill="#E05252"/><line x1="258" y1="130" x2="258" y2="151" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="274" y="140" width="12" height="12" fill="#1A6B3A"/><line x1="280" y1="136" x2="280" y2="152" stroke="#1A6B3A" stroke-width="1.5"/>
+      <rect x="296" y="142" width="12" height="18" fill="#E05252"/><line x1="302" y1="138" x2="302" y2="160" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="318" y="148" width="12" height="14" fill="#1A6B3A"/><line x1="324" y1="144" x2="324" y2="162" stroke="#1A6B3A" stroke-width="1.5"/>
+      <rect x="340" y="152" width="12" height="16" fill="#E05252"/><line x1="346" y1="148" x2="346" y2="168" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="362" y="158" width="12" height="12" fill="#1A6B3A"/><line x1="368" y1="154" x2="368" y2="170" stroke="#1A6B3A" stroke-width="1.5"/>
+      <rect x="384" y="160" width="12" height="15" fill="#E05252"/><line x1="390" y1="155" x2="390" y2="175" stroke="#E05252" stroke-width="1.5"/>
+      <text x="424" y="295" class="chart-label-gold" text-anchor="middle" font-size="10">9:30 AM</text>
+      <rect x="424" y="180" width="16" height="32" fill="#E05252"/>
+      <line x1="432" y1="212" x2="432" y2="268" stroke="#E05252" stroke-width="2"/>
+      <line x1="432" y1="175" x2="432" y2="180" stroke="#E05252" stroke-width="2"/>
+      <line x1="432" y1="268" x2="432" y2="278" stroke="rgba(224,82,82,0.8)" stroke-width="1.5"/>
+      <text x="500" y="272" class="chart-annotation" fill="#E05252" font-size="11">THE SWEEP ↑</text>
+      <text x="500" y="285" class="chart-label-red" font-size="9">SSL swept — London Low taken</text>
+      <rect x="448" y="160" width="16" height="25" fill="#3DBA78"/><line x1="456" y1="155" x2="456" y2="185" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="472" y="148" width="16" height="20" fill="#3DBA78"/><line x1="480" y1="143" x2="480" y2="168" stroke="#3DBA78" stroke-width="1.5"/>
+      <line x1="480" y1="143" x2="530" y2="105" stroke="rgba(61,186,120,0.6)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="532" y="102" class="chart-annotation" fill="#3DBA78" font-size="11">5M BOS ✓</text>
+      <rect x="490" y="168" width="70" height="22" fill="rgba(200,168,75,0.12)" stroke="rgba(200,168,75,0.4)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="562" y="176" class="chart-label-gold" font-size="9">2M INVERSION</text>
+      <text x="562" y="188" class="chart-label-gold" font-size="9">FVG → ENTRY</text>
+      <rect x="496" y="172" width="14" height="18" fill="#E05252"/><line x1="503" y1="168" x2="503" y2="190" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="518" y="140" width="16" height="32" fill="#3DBA78"/><line x1="526" y1="135" x2="526" y2="172" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="542" y="118" width="16" height="28" fill="#3DBA78"/><line x1="550" y1="112" x2="550" y2="146" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="566" y="100" width="16" height="24" fill="#3DBA78"/><line x1="574" y1="95" x2="574" y2="124" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="590" y="88" width="16" height="18" fill="#3DBA78"/><line x1="598" y1="84" x2="598" y2="106" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="614" y="80" width="16" height="14" fill="#3DBA78"/><line x1="622" y1="76" x2="622" y2="94" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="638" y="75" width="16" height="10" fill="#3DBA78"/><line x1="646" y1="71" x2="646" y2="85" stroke="#3DBA78" stroke-width="1.5"/>
+      <line x1="420" y1="65" x2="860" y2="65" stroke="rgba(200,168,75,0.7)" stroke-width="1.5" stroke-dasharray="8,4"/>
+      <text x="668" y="62" class="chart-label-gold">DRAW ON LIQUIDITY — PDH (TP2)</text>
+      <line x1="420" y1="108" x2="860" y2="108" stroke="rgba(61,186,120,0.4)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="668" y="105" class="chart-label-green" font-size="9">TP1 — FIRST LIQUIDITY POOL</text>
+      <line x1="432" y1="272" x2="860" y2="272" stroke="rgba(224,82,82,0.3)" stroke-width="1" stroke-dasharray="3,6"/>
+      <text x="668" y="270" class="chart-label-red" font-size="9">STOP — 3 TICKS BELOW SWEEP WICK LOW</text>
+      <circle cx="503" cy="181" r="5" fill="none" stroke="#C8A84B" stroke-width="2"/>
+      <text x="510" y="202" class="chart-label-gold" font-size="9">LIMIT ENTRY AT 2M FVG</text>
+      <defs><marker id="ag" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(200,168,75,0.8)"/></marker></defs>
+    </svg>
+    <div class="chart-example-caption">
+      <span>NQ 5M → 2M DRILL-DOWN — BULLISH SETUP</span>
+      <span>SSL SWEEP → 5M BOS → 2M INVERSION FVG → LIMIT ENTRY → TP1 → TP2 (PDH)</span>
+    </div>
+  </div>
+
+  <!-- CHART 2: FULL STACK BEARISH -->
+
+  <div class="chart-example">
+    <div class="chart-example-header">
+      <span class="chart-dot red"></span><span class="chart-dot yellow"></span><span class="chart-dot green"></span>
+      <span style="margin-left:8px">EXAMPLE 02 — FULL STACK BEARISH (BSL Sweep + SMT + Stop & Targets)</span>
+    </div>
+    <svg viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg" style="background:#090B0D">
+      <defs>
+        <marker id="ag2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(200,168,75,0.8)"/></marker>
+      </defs>
+      <line x1="0" y1="80" x2="860" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="160" x2="860" y2="160" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="240" x2="860" y2="240" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="300" x2="860" y2="300" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <text x="12" y="18" class="chart-label-gold" font-size="10">HTF BIAS = BEARISH — Daily: Lower Highs, Lower Lows</text>
+      <!-- BSL / PDH line -->
+      <line x1="0" y1="90" x2="860" y2="90" stroke="rgba(224,82,82,0.45)" stroke-width="1.5" stroke-dasharray="8,4"/>
+      <text x="8" y="87" class="chart-label-red">PDH + LONDON HIGH — BUY-SIDE LIQUIDITY (BSL)</text>
+      <!-- Draw on liquidity line - equal lows -->
+      <line x1="0" y1="310" x2="860" y2="310" stroke="rgba(200,168,75,0.6)" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="8" y="308" class="chart-label-gold">DRAW ON LIQUIDITY — EQUAL LOWS (TP2)</text>
+      <!-- TP1 intermediate level -->
+      <line x1="340" y1="220" x2="860" y2="220" stroke="rgba(61,186,120,0.4)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="420" y="217" class="chart-label-green" font-size="9">TP1 — FIRST LIQUIDITY POOL</text>
+      <!-- Pre-open candles (bearish context) -->
+      <rect x="20" y="130" width="14" height="30" fill="#E05252"/><line x1="27" y1="125" x2="27" y2="160" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="42" y="140" width="14" height="20" fill="#3DBA78"/><line x1="49" y1="136" x2="49" y2="160" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="64" y="148" width="14" height="28" fill="#E05252"/><line x1="71" y1="142" x2="71" y2="176" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="86" y="155" width="14" height="20" fill="#3DBA78"/><line x1="93" y1="150" x2="93" y2="175" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="108" y="162" width="14" height="30" fill="#E05252"/><line x1="115" y1="156" x2="115" y2="192" stroke="#E05252" stroke-width="1.5"/>
+      <!-- London false rally up into BSL -->
+      <rect x="130" y="178" width="14" height="22" fill="#3DBA78"/><line x1="137" y1="172" x2="137" y2="200" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="152" y="158" width="14" height="25" fill="#3DBA78"/><line x1="159" y1="152" x2="159" y2="183" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="174" y="140" width="14" height="22" fill="#3DBA78"/><line x1="181" y1="135" x2="181" y2="162" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="196" y="125" width="14" height="20" fill="#3DBA78"/><line x1="203" y1="120" x2="203" y2="145" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="218" y="118" width="14" height="14" fill="#3DBA78"/><line x1="225" y1="113" x2="225" y2="132" stroke="#3DBA78" stroke-width="1.5"/>
+      <!-- 9:30 line -->
+      <line x1="340" y1="0" x2="340" y2="360" stroke="rgba(200,168,75,0.5)" stroke-width="1.5"/>
+      <text x="344" y="355" class="chart-label-gold" font-size="10">9:30 AM</text>
+      <!-- THE SWEEP — buy-side, spikes above BSL -->
+      <rect x="340" y="100" width="16" height="25" fill="#E05252"/>
+      <line x1="348" y1="90" x2="348" y2="62" stroke="#E05252" stroke-width="2.5"/>
+      <line x1="348" y1="125" x2="348" y2="130" stroke="#E05252" stroke-width="2"/>
+      <!-- STOP line above sweep wick -->
+      <line x1="340" y1="58" x2="860" y2="58" stroke="rgba(224,82,82,0.35)" stroke-width="1" stroke-dasharray="3,6"/>
+      <text x="630" y="56" class="chart-label-red" font-size="9">STOP — 3 TICKS ABOVE SWEEP WICK HIGH</text>
+      <!-- Sweep annotation -->
+      <text x="380" y="55" class="chart-annotation" fill="#E05252" font-size="11">BSL SWEPT ✓</text>
+      <text x="380" y="68" class="chart-label-red" font-size="9">PDH + London High taken</text>
+      <!-- SMT label -->
+      <text x="380" y="82" class="chart-label-gold" font-size="9">SMT: ES did NOT make new high → short confirmed</text>
+      <!-- Recovery candles dropping down — BOS -->
+      <rect x="364" y="118" width="14" height="22" fill="#E05252"/><line x1="371" y1="112" x2="371" y2="140" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="386" y="128" width="14" height="24" fill="#E05252"/><line x1="393" y1="124" x2="393" y2="152" stroke="#E05252" stroke-width="1.5"/>
+      <!-- 5M BOS label -->
+      <text x="450" y="175" class="chart-label-green" font-size="9">5M BOS BEARISH ✓ — close below last 5M swing low</text>
+      <!-- 2M Inversion FVG zone (bearish) — above entry, where price retraces to before dropping -->
+      <rect x="405" y="108" width="55" height="22" fill="rgba(200,168,75,0.12)" stroke="rgba(200,168,75,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="462" y="117" class="chart-label-gold" font-size="9">2M INVERSION</text>
+      <text x="462" y="128" class="chart-label-gold" font-size="9">FVG ZONE</text>
+      <!-- Retest candle (bullish, price retraces into FVG) -->
+      <rect x="408" y="112" width="14" height="18" fill="#3DBA78"/><line x1="415" y1="108" x2="415" y2="130" stroke="#3DBA78" stroke-width="1.5"/>
+      <!-- Entry circle -->
+      <circle cx="415" cy="120" r="6" fill="none" stroke="#C8A84B" stroke-width="2"/>
+      <text x="520" y="118" class="chart-label-gold" font-size="9">← LIMIT SHORT ENTRY (2M FVG midpoint)</text>
+      <!-- Strong bearish drop -->
+      <rect x="430" y="135" width="14" height="28" fill="#E05252"/><line x1="437" y1="130" x2="437" y2="163" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="452" y="152" width="14" height="30" fill="#E05252"/><line x1="459" y1="148" x2="459" y2="182" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="474" y="170" width="14" height="26" fill="#E05252"/><line x1="481" y1="165" x2="481" y2="196" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="496" y="186" width="14" height="30" fill="#E05252"/><line x1="503" y1="182" x2="503" y2="216" stroke="#E05252" stroke-width="1.5"/>
+      <!-- TP1 hit label -->
+      <circle cx="503" cy="220" r="5" fill="#3DBA78" opacity="0.8"/>
+      <text x="520" y="222" class="chart-label-green" font-size="9">TP1 HIT → close 50%, move stop to breakeven</text>
+      <rect x="518" y="202" width="14" height="28" fill="#E05252"/><line x1="525" y1="197" x2="525" y2="230" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="540" y="218" width="14" height="32" fill="#E05252"/><line x1="547" y1="213" x2="547" y2="250" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="562" y="238" width="14" height="28" fill="#E05252"/><line x1="569" y1="233" x2="569" y2="266" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="584" y="252" width="14" height="30" fill="#E05252"/><line x1="591" y1="248" x2="591" y2="282" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="606" y="268" width="14" height="26" fill="#E05252"/><line x1="613" y1="264" x2="613" y2="294" stroke="#E05252" stroke-width="1.5"/>
+      <!-- TP2 hit -->
+      <circle cx="613" cy="310" r="6" fill="#C8A84B" opacity="0.9"/>
+      <text x="625" y="313" class="chart-label-gold" font-size="9">TP2 HIT — EQUAL LOWS REACHED</text>
+      <!-- R:R measurement -->
+      <line x1="800" y1="120" x2="800" y2="310" stroke="rgba(200,168,75,0.4)" stroke-width="1.5"/>
+      <line x1="795" y1="120" x2="805" y2="120" stroke="rgba(200,168,75,0.4)" stroke-width="1.5"/>
+      <line x1="795" y1="310" x2="805" y2="310" stroke="rgba(200,168,75,0.4)" stroke-width="1.5"/>
+      <line x1="820" y1="58" x2="820" y2="120" stroke="rgba(224,82,82,0.4)" stroke-width="1.5"/>
+      <line x1="815" y1="58" x2="825" y2="58" stroke="rgba(224,82,82,0.4)" stroke-width="1.5"/>
+      <line x1="815" y1="120" x2="825" y2="120" stroke="rgba(224,82,82,0.4)" stroke-width="1.5"/>
+      <text x="830" y="94" class="chart-label-red" font-size="9">RISK</text>
+      <text x="810" y="220" class="chart-label-gold" font-size="9" transform="rotate(-90,810,220)">REWARD</text>
+      <text x="845" y="205" class="chart-annotation" fill="#C8A84B" font-size="13" text-anchor="middle" transform="rotate(-90,845,205)">~5:1 R:R</text>
+    </svg>
+    <div class="chart-example-caption">
+      <span>NQ 5M — BEARISH FULL STACK + SMT</span>
+      <span>BSL SWEEP → SMT ✓ → 5M BOS → 2M INVERSION FVG → ENTRY → TP1 → TP2 AT EQUAL LOWS</span>
+    </div>
+  </div>
+
+  <!-- CHART 3: SMT SPLIT SIGNAL -->
+
+  <div class="chart-example">
+    <div class="chart-example-header">
+      <span class="chart-dot red"></span><span class="chart-dot yellow"></span><span class="chart-dot green"></span>
+      <span style="margin-left:8px">EXAMPLE 03 — SMT DIVERGENCE (Split Screen NQ vs ES)</span>
+    </div>
+    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg" style="background:#090B0D">
+      <line x1="430" y1="0" x2="430" y2="220" stroke="rgba(200,168,75,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="215" y="20" class="chart-label-gold" text-anchor="middle" font-size="12" font-weight="bold">NQ — NASDAQ 5M</text>
+      <text x="645" y="20" class="chart-label-gold" text-anchor="middle" font-size="12" font-weight="bold">ES — S&amp;P 500 5M</text>
+      <line x1="0" y1="70" x2="430" y2="70" stroke="rgba(224,82,82,0.5)" stroke-width="1" stroke-dasharray="6,3"/>
+      <text x="8" y="67" class="chart-label-red" font-size="9">PREV HIGH / BSL</text>
+      <rect x="20" y="120" width="12" height="30" fill="#3DBA78"/><line x1="26" y1="115" x2="26" y2="150" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="40" y="105" width="12" height="22" fill="#3DBA78"/><line x1="46" y1="100" x2="46" y2="127" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="60" y="95" width="12" height="18" fill="#3DBA78"/><line x1="66" y1="90" x2="66" y2="113" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="80" y="82" width="12" height="18" fill="#3DBA78"/><line x1="86" y1="77" x2="86" y2="100" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="100" y="76" width="12" height="10" fill="#3DBA78"/><line x1="106" y1="72" x2="106" y2="86" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="120" y="78" width="14" height="20" fill="#E05252"/>
+      <line x1="127" y1="68" x2="127" y2="46" stroke="#E05252" stroke-width="2.5"/>
+      <line x1="127" y1="98" x2="127" y2="105" stroke="#E05252" stroke-width="2"/>
+      <text x="145" y="50" class="chart-annotation" fill="#E05252" font-size="10">NEW HIGH ✓</text>
+      <text x="145" y="63" class="chart-label-red" font-size="9">BSL swept</text>
+      <rect x="142" y="100" width="12" height="22" fill="#E05252"/><line x1="148" y1="96" x2="148" y2="122" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="162" y="112" width="12" height="24" fill="#E05252"/><line x1="168" y1="108" x2="168" y2="136" stroke="#E05252" stroke-width="1.5"/>
+      <rect x="182" y="125" width="12" height="26" fill="#E05252"/><line x1="188" y1="120" x2="188" y2="151" stroke="#E05252" stroke-width="1.5"/>
+      <text x="215" y="175" class="chart-label-green" font-size="9" text-anchor="middle">5M BOS BEARISH ✓</text>
+      <line x1="430" y1="70" x2="860" y2="70" stroke="rgba(224,82,82,0.5)" stroke-width="1" stroke-dasharray="6,3"/>
+      <text x="438" y="67" class="chart-label-red" font-size="9">PREV HIGH / BSL (same level)</text>
+      <rect x="450" y="120" width="12" height="28" fill="#3DBA78"/><line x1="456" y1="115" x2="456" y2="148" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="470" y="108" width="12" height="20" fill="#3DBA78"/><line x1="476" y1="103" x2="476" y2="128" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="490" y="98" width="12" height="16" fill="#3DBA78"/><line x1="496" y1="94" x2="496" y2="114" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="510" y="90" width="12" height="14" fill="#3DBA78"/><line x1="516" y1="86" x2="516" y2="104" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="530" y="85" width="12" height="10" fill="#3DBA78"/><line x1="536" y1="82" x2="536" y2="95" stroke="#3DBA78" stroke-width="1.5"/>
+      <rect x="550" y="87" width="14" height="16" fill="#E05252"/>
+      <line x1="557" y1="87" x2="557" y2="78" stroke="#E05252" stroke-width="2"/>
+      <line x1="557" y1="103" x2="557" y2="110" stroke="#E05252" stroke-width="2"/>
+      <text x="575" y="68" class="chart-annotation" fill="#3DBA78" font-size="12">✗ FAILS TO REACH BSL</text>
+      <text x="575" y="82" class="chart-label-green" font-size="9">ES is WEAKER — already turning</text>
+      <line x1="127" y1="46" x2="557" y2="78" stroke="rgba(200,168,75,0.6)" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="342" y="40" class="chart-label-gold" text-anchor="middle" font-size="11" font-weight="bold">SMT DIVERGENCE = HIGHEST QUALITY SHORT SETUP</text>
+      <text x="645" y="195" class="chart-annotation" fill="#C8A84B" text-anchor="middle" font-size="10">NQ sweeps BSL, ES fails → divergence confirmed → enter short after 5M BOS</text>
+    </svg>
+    <div class="chart-example-caption">
+      <span>NQ vs ES — SMT DIVERGENCE SPLIT SCREEN</span>
+      <span>NQ NEW HIGH (BSL SWEPT) + ES FAILS TO CONFIRM = PREMIUM SHORT SETUP</span>
+    </div>
+  </div>
+
+  <!-- CHART 4: DEAD WATER -->
+
+  <div class="chart-example">
+    <div class="chart-example-header">
+      <span class="chart-dot red"></span><span class="chart-dot yellow"></span><span class="chart-dot green"></span>
+      <span style="margin-left:8px">EXAMPLE 04 — DEAD WATER (Choppy Open — No Trade)</span>
+    </div>
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" style="background:#090B0D">
+      <line x1="0" y1="60" x2="860" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="120" x2="860" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="160" x2="860" y2="160" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <text x="200" y="18" class="chart-label" text-anchor="middle" font-size="10">LONDON — NO CLEAR DIRECTION (RANGING)</text>
+      <line x1="400" y1="0" x2="400" y2="200" stroke="rgba(200,168,75,0.4)" stroke-width="1.5"/>
+      <text x="405" y="195" class="chart-label-gold" font-size="10">9:30</text>
+      <rect x="20" y="95" width="12" height="18" fill="#3DBA78"/><line x1="26" y1="90" x2="26" y2="113" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="40" y="90" width="12" height="22" fill="#E05252"/><line x1="46" y1="85" x2="46" y2="112" stroke="#E05252" stroke-width="1"/>
+      <rect x="60" y="88" width="12" height="15" fill="#3DBA78"/><line x1="66" y1="82" x2="66" y2="103" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="80" y="92" width="12" height="20" fill="#E05252"/><line x1="86" y1="87" x2="86" y2="112" stroke="#E05252" stroke-width="1"/>
+      <rect x="100" y="86" width="12" height="18" fill="#3DBA78"/><line x1="106" y1="82" x2="106" y2="104" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="120" y="90" width="12" height="22" fill="#E05252"/><line x1="126" y1="84" x2="126" y2="112" stroke="#E05252" stroke-width="1"/>
+      <rect x="140" y="88" width="12" height="14" fill="#3DBA78"/><line x1="146" y1="84" x2="146" y2="102" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="160" y="93" width="12" height="18" fill="#E05252"/><line x1="166" y1="88" x2="166" y2="111" stroke="#E05252" stroke-width="1"/>
+      <rect x="180" y="89" width="12" height="16" fill="#3DBA78"/><line x1="186" y1="85" x2="186" y2="105" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="200" y="90" width="12" height="20" fill="#E05252"/><line x1="206" y1="84" x2="206" y2="110" stroke="#E05252" stroke-width="1"/>
+      <rect x="220" y="86" width="12" height="18" fill="#3DBA78"/><line x1="226" y1="82" x2="226" y2="104" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="240" y="88" width="12" height="22" fill="#E05252"/><line x1="246" y1="82" x2="246" y2="110" stroke="#E05252" stroke-width="1"/>
+      <rect x="260" y="84" width="12" height="16" fill="#3DBA78"/><line x1="266" y1="80" x2="266" y2="100" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="280" y="88" width="12" height="18" fill="#E05252"/><line x1="286" y1="84" x2="286" y2="106" stroke="#E05252" stroke-width="1"/>
+      <rect x="300" y="84" width="12" height="20" fill="#3DBA78"/><line x1="306" y1="80" x2="306" y2="104" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="320" y="88" width="12" height="16" fill="#E05252"/><line x1="326" y1="84" x2="326" y2="104" stroke="#E05252" stroke-width="1"/>
+      <rect x="340" y="86" width="12" height="18" fill="#3DBA78"/><line x1="346" y1="80" x2="346" y2="104" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="360" y="88" width="12" height="14" fill="#E05252"/><line x1="366" y1="84" x2="366" y2="102" stroke="#E05252" stroke-width="1"/>
+      <rect x="380" y="84" width="12" height="18" fill="#3DBA78"/><line x1="386" y1="80" x2="386" y2="102" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="400" y="78" width="14" height="24" fill="#3DBA78"/>
+      <line x1="407" y1="58" x2="407" y2="78" stroke="#3DBA78" stroke-width="2.5"/>
+      <line x1="407" y1="102" x2="407" y2="108" stroke="#3DBA78" stroke-width="2"/>
+      <text x="425" y="55" class="chart-label-green" font-size="9">Fake sweep ↑</text>
+      <rect x="422" y="92" width="14" height="26" fill="#E05252"/>
+      <line x1="429" y1="88" x2="429" y2="72" stroke="#E05252" stroke-width="2"/>
+      <line x1="429" y1="118" x2="429" y2="145" stroke="#E05252" stroke-width="2.5"/>
+      <text x="445" y="155" class="chart-label-red" font-size="9">Fake sweep ↓</text>
+      <rect x="444" y="88" width="12" height="16" fill="#3DBA78"/><line x1="450" y1="84" x2="450" y2="104" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="464" y="86" width="12" height="20" fill="#E05252"/><line x1="470" y1="82" x2="470" y2="106" stroke="#E05252" stroke-width="1"/>
+      <rect x="484" y="88" width="12" height="14" fill="#3DBA78"/><line x1="490" y1="84" x2="490" y2="102" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="504" y="90" width="12" height="18" fill="#E05252"/><line x1="510" y1="86" x2="510" y2="108" stroke="#E05252" stroke-width="1"/>
+      <rect x="524" y="86" width="12" height="16" fill="#3DBA78"/><line x1="530" y1="82" x2="530" y2="102" stroke="#3DBA78" stroke-width="1"/>
+      <rect x="400" y="0" width="460" height="200" fill="rgba(0,0,0,0.3)"/>
+      <text x="630" y="100" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="32" fill="rgba(200,168,75,0.15)" font-weight="bold" letter-spacing="4">DEAD WATER</text>
+      <text x="630" y="125" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(200,168,75,0.5)" letter-spacing="3">NO TRADE — CLOSE CHARTS</text>
+      <text x="407" y="40" fill="rgba(224,82,82,0.7)" font-size="22" text-anchor="middle">✗</text>
+      <text x="429" y="170" fill="rgba(224,82,82,0.7)" font-size="22" text-anchor="middle">✗</text>
+      <line x1="0" y1="82" x2="860" y2="82" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="0" y1="110" x2="860" y2="110" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2,4"/>
+      <text x="8" y="80" class="chart-label" font-size="8">RANGE TOP</text>
+      <text x="8" y="108" class="chart-label" font-size="8">RANGE BOTTOM</text>
+    </svg>
+    <div class="chart-example-caption">
+      <span>NQ 5M — DEAD WATER DAY</span>
+      <span>NO CLEAR HTF BIAS + FAKE FLUSHES BOTH WAYS = NO TRADE, PROTECT CAPITAL</span>
+    </div>
+  </div>
+
+  <h3>The Complete Entry Checklist</h3>
+  <ul class="checklist">
+    <li><span class="check-box"></span><strong>HTF bias is clear</strong> — daily and 4H both bullish or both bearish. Written in journal.</li>
+    <li><span class="check-box"></span><strong>Draw on liquidity identified</strong> — the main target pool is marked before the open</li>
+    <li><span class="check-box"></span><strong>Key levels marked</strong> — PDH/PDL, Asia H/L, London H/L, weekly H/L all on chart</li>
+    <li><span class="check-box"></span><strong>Liquidity sweep confirmed</strong> — price spiked through a Tier 1 or Tier 2 level and closed back</li>
+    <li><span class="check-box"></span><strong>Sweep direction is correct</strong> — swept against the bias temporarily (SSL for bullish, BSL for bearish)</li>
+    <li><span class="check-box"></span><strong>5M BOS confirmed</strong> — 5M candle closed in the direction of the bias after the sweep</li>
+    <li><span class="check-box"></span><strong>2M inversion FVG identified</strong> — the entry zone is visible and drawn on the 2M chart</li>
+    <li><span class="check-box"></span><strong>Stop-loss placed</strong> — 2-5 ticks beyond the sweep wick extreme. Set BEFORE entry.</li>
+    <li><span class="check-box"></span><strong>TP1 set</strong> — at the nearest liquidity pool in the direction of the trade</li>
+    <li><span class="check-box"></span><strong>TP2 set</strong> — at the main draw on liquidity identified pre-market</li>
+    <li><span class="check-box"></span><strong>R:R is at least 2:1</strong> — distance to TP1 is at least 2× the distance to stop</li>
+    <li><span class="check-box"></span>(Premium) <strong>SMT divergence confirmed</strong> — NQ and ES diverged at the sweep level</li>
+  </ul>
+
+  <div class="statement">
+    <div class="statement-text">If it's not all checked,<br>it's not the trade.</div>
+    <div class="statement-sub">Every unchecked box is a reason the trade could fail. Don't rationalize. Walk away.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 8 ════════════════════════════ -->
+
+<div class="page" id="ch8">
+  <div class="ch-header">
+    <div class="ch-num-big">08</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Eight — Management</div>
+      <div class="ch-title">Trade Management</div>
+      <p class="ch-intro">Getting into a trade is the beginning. How you manage it determines whether a good setup becomes a profitable trade or a breakeven. Every decision from entry to exit is covered here.</p>
+    </div>
+  </div>
+
+  <h3>Stop-Loss Placement</h3>
+  <div class="g2">
+    <div class="card card-green">
+      <div class="card-label">Long Trades</div>
+      <div class="card-title">Stop Below the Flush Low</div>
+      <p>Just below the lowest wick of The Flush (sell-side sweep) plus a small buffer of a few ticks. If price goes back below The Flush low, the setup is invalidated. The thesis is wrong. Get out.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-label">Short Trades</div>
+      <div class="card-title">Stop Above the Flush High</div>
+      <p>Just above the highest wick of The Flush (buy-side sweep) plus a small buffer. If price goes back above the flush high, the setup is invalidated. Exit before the loss grows.</p>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-box-title">Stop-Loss Rules — Non-Negotiable</div>
+    <ul class="rule-list">
+      <li>Set your stop-loss before entering the trade. Not after. Before.</li>
+      <li>Never move a stop-loss to a wider position to avoid being stopped out.</li>
+      <li>Acceptable: trail stop to breakeven after your first target is hit</li>
+      <li>Acceptable: trail stop in the direction of the trade once in significant profit</li>
+      <li>Being stopped out on a valid Full Stack setup is the cost of doing business — it does not mean the strategy failed</li>
+    </ul>
+  </div>
+
+  <h3>Take Profit — The Magnetic Target</h3>
+  <div class="g2">
+    <div class="stat-box">
+      <div class="stat-box-label">First Target (TP1) — 50%</div>
+      <div class="stat-box-value c-green">Close Half</div>
+      <div class="stat-box-sub">First obvious liquidity pool in your direction — minor swing point, session level, or first FVG. Take half the position. Move stop to breakeven immediately after.</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-label">Second Target (TP2) — 50%</div>
+      <div class="stat-box-value c-gold">Full Target</div>
+      <div class="stat-box-sub">The full Magnetic Target identified in The Read — PDH/PDL, weekly level, daily FVG. Let this runner reach the full target. Trail stop if needed.</div>
+    </div>
+  </div>
+
+  <h3>Risk Per Trade</h3>
+  <div class="g3">
+    <div class="stat-box">
+      <div class="stat-box-label">Max Risk Per Trade</div>
+      <div class="stat-box-value c-red">1–2%</div>
+      <div class="stat-box-sub">Of total account. Absolute ceiling. No exceptions for "high confidence" setups.</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-label">Daily Loss Limit</div>
+      <div class="stat-box-value c-red">3%</div>
+      <div class="stat-box-sub">Hit this → stop trading. Close everything. Done for the day. No debate.</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-label">Target R:R</div>
+      <div class="stat-box-value c-gold">3:1+</div>
+      <div class="stat-box-sub">Minimum for a Full Stack. Clean Flush setups often deliver 4:1 to 6:1.</div>
+    </div>
+  </div>
+
+  <h4>The Math That Changes Everything</h4>
+  <p>At 1% risk per trade and a 3:1 target, you only need to win <strong>26% of your trades</strong> to break even. At 40% win rate, you are very profitable. At 50% win rate, you are thriving. The edge is in the math — not in being right every trade. Risk management <em>is</em> the strategy as much as the entry framework is.</p>
+
+  <h3>Position Sizing Formula</h3>
+  <div class="rule-box">
+    <div class="rule-box-title">Calculate Before Every Single Trade</div>
+    <ul class="rule-list">
+      <li><strong>Step 1:</strong> Dollar risk = Account size × Risk % &nbsp;(e.g. $50,000 × 1% = $500)</li>
+      <li><strong>Step 2:</strong> Stop distance in points &nbsp;(e.g. stop is 20 points from entry on NQ)</li>
+      <li><strong>Step 3:</strong> Dollar per point per contract &nbsp;(NQ = $20/pt, MNQ = $2/pt, ES = $50/pt, MES = $5/pt)</li>
+      <li><strong>Step 4:</strong> Contracts = Dollar risk ÷ (Stop distance × Dollar per point)</li>
+      <li><strong>Example:</strong> $500 ÷ (20 × $20) = $500 ÷ $400 = 1.25 → round down to <strong>1 contract</strong></li>
+    </ul>
+  </div>
+
+  <h3>Post-Trade Ritual</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-body"><div class="flow-title">Screenshot immediately</div><div class="flow-desc">Chart showing entry, stop, and target with all key levels marked. This goes in the journal.</div></div></div>
+    <div class="flow-step"><div class="flow-num">2</div><div class="flow-body"><div class="flow-title">Write the pre-trade reasoning</div><div class="flow-desc">What was The Current? The Flush level? The entry signal? The Magnetic Target? Was there a Split Signal? Rate the setup: Clean Flush / Full Stack / Partial.</div></div></div>
+    <div class="flow-step"><div class="flow-num">3</div><div class="flow-body"><div class="flow-title">Record the outcome</div><div class="flow-desc">P&L in dollars and R multiples (+2.5R or -1R). Where did you enter and exit? Did you follow the rules or deviate? Be honest.</div></div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-body"><div class="flow-title">Write one lesson</div><div class="flow-desc">Even on a perfect trade, write one observation. One thing confirmed. One thing to improve. This compounding of insights is how you evolve from good to elite.</div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 9 ════════════════════════════ -->
+
+<div class="page" id="ch9">
+  <div class="ch-header">
+    <div class="ch-num-big">09</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Nine — Examples</div>
+      <div class="ch-title">Scenarios, Setups & Dead Water Days</div>
+      <p class="ch-intro">Concepts become real through scenarios. These are detailed walkthroughs of the main setup types you will encounter at the NY open, every day.</p>
+    </div>
+  </div>
+
+  <h3>Scenario 1: Bullish Clean Flush — SSL Sweep at Foundation Range</h3>
+  <div class="scenario">
+    <div class="scenario-header"><div class="scenario-type bull">Bullish — Clean Flush</div><div class="scenario-title">Sell-Side Flush at Foundation Range + London Low, Split Signal Confirmed</div></div>
+    <div class="scenario-row"><span class="scenario-key">The Current</span><span class="scenario-val"><strong>Bullish.</strong> Weekly making higher highs. Daily closed bullish yesterday, broke above a 4H swing high. Targeting previous week's high sitting above.</span></div>
+    <div class="scenario-row"><span class="scenario-key">The Read</span><span class="scenario-val">Foundation Range: Asia low 19,850 / Asia high 19,920. London rallied 3–7 AM to 20,100 (London high), then consolidated. London low: 19,960. PDL: 19,840. Previous week high: 20,250. Magnetic Target: 20,250. The Current: Bullish. Looking for longs.</span></div>
+    <div class="scenario-row"><span class="scenario-key">9:30 AM</span><span class="scenario-val">NY bell rings. Price immediately drops to 19,835 — sweeping both the London low (19,960) and the Foundation Range low (19,850). NQ makes a new low at 19,835. ES only drops to the equivalent of 19,940 — does NOT make a new low.</span></div>
+    <div class="scenario-row"><span class="scenario-key">The Flush</span><span class="scenario-val">Confirmed. Double sweep of Foundation Range AND London low. Wick to 19,835. Candle closes back at 19,900 within 2 candles. Classic Flush.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Split Signal</span><span class="scenario-val"><strong>Confirmed.</strong> NQ swept lows. ES did not. This is a Clean Flush.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Signal</span><span class="scenario-val">5M BOS above the 5M swing high at 19,960. Bullish inversion FVG forming at 19,930–19,950. Price pulls back into this zone.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Entry</span><span class="scenario-val">Long at 19,940. Stop at 19,820 (below flush wick). Target: 20,250. Risk: 120 pts. Reward: 310 pts. R:R = 2.58:1.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Outcome</span><span class="scenario-val">TP1 hit at 20,100 by 10:15 AM. Stop moved to breakeven. TP2 (full Magnetic Target) reached by 11:30 AM. Full trade: approx 3:1 R.</span></div>
+  </div>
+
+  <h3>Scenario 2: Bearish Full Stack — BSL Sweep at London High</h3>
+  <div class="scenario">
+    <div class="scenario-header"><div class="scenario-type bear">Bearish — Full Stack</div><div class="scenario-title">Buy-Side Flush at London High + PDH Sweep, No Split Signal</div></div>
+    <div class="scenario-row"><span class="scenario-key">The Current</span><span class="scenario-val"><strong>Bearish.</strong> Daily making lower highs and lower lows for 3 days. 4H bearish. Magnetic Target: equal lows sitting below the market at 19,960.</span></div>
+    <div class="scenario-row"><span class="scenario-key">The Read</span><span class="scenario-val">Foundation Range: Asia low 20,100 / Asia high 20,220. London spiked to 20,380 (London high). PDH: 20,350. Magnetic Target: equal lows at 19,960. Looking for shorts.</span></div>
+    <div class="scenario-row"><span class="scenario-key">9:30 AM</span><span class="scenario-val">NY opens, price rips up to 20,410 — sweeping PDH (20,350) and London high (20,380). NQ and ES both make new highs (no Split Signal). But the flush itself is very clean — double sweep of two major levels.</span></div>
+    <div class="scenario-row"><span class="scenario-key">The Flush</span><span class="scenario-val">Confirmed. Wick to 20,410, close back at 20,290 within 2 candles. No Split Signal, but Full Stack is otherwise complete. Setup quality: A (Full Stack, not Clean Flush). Trade at full size.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Signal</span><span class="scenario-val">5M BOS below 5M swing low at 20,300. Bearish inversion FVG at 20,320–20,360. Price retraces into zone.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Entry</span><span class="scenario-val">Short at 20,340. Stop at 20,420. Target: 19,960 equal lows. Risk: 80 pts. Reward: 380 pts. R:R = 4.75:1.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Outcome</span><span class="scenario-val">TP1 at 20,150 by 10:30 AM. Stop to breakeven. Full Magnetic Target reached by 2:00 PM. Outstanding trade.</span></div>
+  </div>
+
+  <h3>Scenario 3: Dead Water Day</h3>
+  <div class="scenario">
+    <div class="scenario-header"><div class="scenario-type none">No Trade — Dead Water</div><div class="scenario-title">Ambiguous Current — Choppy Open — No Valid Setup</div></div>
+    <div class="scenario-row"><span class="scenario-key">The Read</span><span class="scenario-val">Weekly chart has been ranging 5 days with no clear directional structure. Daily is in the middle of its range, creating neither HH nor LL. 4H is chopping.</span></div>
+    <div class="scenario-row"><span class="scenario-key">The Current</span><span class="scenario-val"><strong>Unclear. Dead Water.</strong> Bullish and bearish arguments are equally valid. No definitive Current can be established.</span></div>
+    <div class="scenario-row"><span class="scenario-key">9:30 AM</span><span class="scenario-val">NY opens and price whips both ways. Briefly sweeps the London high, then sweeps the London low. Fake flushes in both directions with no follow-through. Classic Dead Water open.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Decision</span><span class="scenario-val"><strong>No trade.</strong> The Current is not established. No valid Magnetic Target can be identified. Any trade here is a coin flip. Watch, observe, and study the Dead Water pattern. Your capital is preserved — that is a win today.</span></div>
+    <div class="scenario-row"><span class="scenario-key">Other No-Trade Conditions</span><span class="scenario-val">FOMC announcement, NFP, CPI at 8:30 AM, or any major scheduled event creating abnormal volatility. On these days: skip entirely or wait a full 30+ minutes after the news before assessing.</span></div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-box-term">Dead Water</div>
+    <div class="def-box-also">Unique to This System — No Setup Day</div>
+    <p>Dead Water is when the market offers no clear Current, no valid Flush, or no clear Magnetic Target. The market is flat, choppy, or ambiguous. Just as a boat cannot move without wind or current, this strategy cannot function without its conditions. Dead Water days are not a failure — they are the strategy working correctly by keeping you out of bad trades. Experienced traders recognize Dead Water within minutes of the NY open and close their charts immediately. Beginners fight it and lose money.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════ CHAPTER 10 ═══════════════════════════ -->
+
+<div class="page" id="ch10">
+  <div class="ch-header">
+    <div class="ch-num-big">10</div>
+    <div class="ch-title-block">
+      <div class="ch-eyebrow">Chapter Ten — Mindset</div>
+      <div class="ch-title">Rules, Psychology & The Long Game</div>
+      <p class="ch-intro">Strategy alone does not make a profitable trader. Hundreds of people know this strategy. Only a small percentage make consistent money. The difference is entirely psychological and behavioral.</p>
+    </div>
+  </div>
+
+  <h3>The Non-Negotiable Rules</h3>
+  <div class="rule-box">
+    <div class="rule-box-title">The Rules — Zero Exceptions</div>
+    <ul class="rule-list">
+      <li>Never risk more than 2% of your account on a single trade</li>
+      <li>Never trade without a stop-loss set before entry</li>
+      <li>Never move a stop-loss further away from price to avoid a loss</li>
+      <li>Stop trading after hitting the 3% daily loss limit — done for the day</li>
+      <li>Stop trading after 10:30 AM if no valid setup appeared — The Window is closed</li>
+      <li>Never take more than 2 trades in the same direction if both have stopped out — reset tomorrow</li>
+      <li>Log every trade in your journal — wins, losses, and Dead Water observations</li>
+      <li>No trading during FOMC, NFP, or CPI announcement windows without specific protocol</li>
+      <li>The Current must be clear. The Magnetic Target must be identifiable. Both must be present.</li>
+    </ul>
+  </div>
+
+  <h3>The Five Ways Traders Fail This Strategy</h3>
+  <div class="card card-red">
+    <div class="card-label">Failure 1</div>
+    <div class="card-title">Overtrading</div>
+    <p>Taking trades outside The Window, without a Full Stack, or out of boredom. The strategy has specific conditions. Diluting those conditions dilutes the edge. Five trades a day when only one is valid means 80% of your trades are pure noise — and you're paying commission and risk on all of them.</p>
+  </div>
+  <div class="card card-red">
+    <div class="card-label">Failure 2</div>
+    <div class="card-title">Moving Stop-Losses</div>
+    <p>The moment you move a stop further away to avoid a loss, you have broken the risk management system. What started as -1R becomes -3R, then -5R, then a margin call. A stop-loss is a decision made before emotions are involved. Honor that decision.</p>
+  </div>
+  <div class="card card-red">
+    <div class="card-label">Failure 3</div>
+    <div class="card-title">Revenge Trading</div>
+    <p>Taking an immediate second trade to "win back" a loss. Revenge trades are almost always taken in poor conditions, with too much size, and too much emotion. They turn a -1R day into a -4R day. Two consecutive losses = done for the day. Non-negotiable.</p>
+  </div>
+  <div class="card card-red">
+    <div class="card-label">Failure 4</div>
+    <div class="card-title">Not Journaling</div>
+    <p>Operating in the dark. Making the same mistakes repeatedly because there's no record of patterns. Without the journal, progress is random. With it, progress is systematic. The journal is not optional.</p>
+  </div>
+  <div class="card card-red">
+    <div class="card-label">Failure 5</div>
+    <div class="card-title">Abandoning the System During Drawdown</div>
+    <p>Changing or abandoning the strategy precisely during a temporary drawdown — exactly when you should continue executing it consistently. Every strategy has losing streaks. The strategy that worked for 3 profitable months doesn't stop working in a rough week. Trust the system. Execute the next valid Full Stack with full conviction.</p>
+  </div>
+
+  <h3>The Learning Curve</h3>
+  <table class="data-table">
+    <thead><tr><th>Phase</th><th>Timeline</th><th>Focus</th><th>Success Metric</th></tr></thead>
+    <tbody>
+      <tr><td>Orientation</td><td>Weeks 1–3</td><td>Study all chapters. Watch recorded NY opens on TradingView replay. Identify setups in hindsight — no live trading yet.</td><td>Correctly identify The Current, Flush, and Magnetic Target on 20+ historical setups.</td></tr>
+      <tr><td>Micro Live</td><td>Month 1–2</td><td>Trade 1 MNQ contract daily. Goal is execution — following the checklist, placing orders correctly, journaling consistently. P&L is irrelevant at this stage.</td><td>100% Full Stack checklist compliance. Journal filled every session.</td></tr>
+      <tr><td>Consistency</td><td>Month 2–4</td><td>Continue micro-size. Review journal weekly. Identify patterns in your execution. Increase size very slightly only after 30+ consistent trades.</td><td>Positive expectancy over 30+ trades. No rule violations.</td></tr>
+      <tr><td>Scale Up</td><td>Month 4–6+</td><td>Gradually increase size as confidence is confirmed through the journal. Never increase during a drawdown — only during or after profitable periods.</td><td>Consistent monthly profitability. Automatic pattern recognition.</td></tr>
+      <tr><td>Professional</td><td>Month 6+</td><td>The Read takes 10 minutes. The setup is clear within seconds of The Window opening. One trade. Charts closed. Life is good.</td><td>Consistent returns. Controlled drawdowns. No emotional trading.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The Journal — Your Most Important Tool</h3>
+  <p>Every session produces a journal entry. Every session. Win, loss, Dead Water — every one.</p>
+  <ul class="checklist">
+    <li><span class="check-box"></span>Date and brief market overview</li>
+    <li><span class="check-box"></span>The Current determination — bullish or bearish, and why</li>
+    <li><span class="check-box"></span>Key levels marked and The Magnetic Target</li>
+    <li><span class="check-box"></span>Setup description — what happened at the open, did a Flush occur, what was the signal</li>
+    <li><span class="check-box"></span>If traded: entry, stop, target, size, R:R, outcome in $ and R multiples</li>
+    <li><span class="check-box"></span>Setup quality rating: Clean Flush / Full Stack / Partial / Dead Water</li>
+    <li><span class="check-box"></span>Rule compliance — did you follow every rule?</li>
+    <li><span class="check-box"></span>Annotated screenshot of the setup</li>
+    <li><span class="check-box"></span>One lesson learned</li>
+  </ul>
+
+  <div class="pull-quote">
+    <div class="pull-quote-text">"The market does not owe you anything. It is indifferent to your hopes and your opinion. The only thing you control is your execution."</div>
+    <div class="pull-quote-attr">Core Principle</div>
+  </div>
+
+  <h3>Final Words</h3>
+  <p>This system works. It is not complicated when reduced to its core: read The Current, wait for The Flush, confirm with the Full Stack, enter at the inversion FVG, target the Magnetic Target. That is the entire strategy in one sentence.</p>
+  <p>The reason it is a ten-chapter course and not one sentence is that each word contains layers of understanding that only come through deep study and real application. You have done the study. What remains is the application — screen time, journaling, and above all, consistency.</p>
+  <p>Show up every trading day. Do The Read. Open The Window. Wait for the Full Stack. Execute. Manage. Close the charts. That is the professional trading life.</p>
+
+  <div class="statement">
+    <div class="statement-text">One trade.<br>One Window.<br>Every day.</div>
+    <div class="statement-sub">Consistency is the edge. Patience is the strategy.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ GLOSSARY ═════════════════════════════════ -->
+
+<div class="page" id="glossary">
+  <div id="glossary" class="section-tag">Complete Reference</div>
+  <div class="page-title">Glossary of Terms</div>
+  <p class="page-subtitle">All terminology used in this course — both standard ICT/SMC concepts and terms unique to this system.</p>
+
+  <div class="gloss-item"><div><div class="gloss-term">The Window</div><div class="gloss-also">Unique to this system</div></div><div class="gloss-def">The NY open execution timeframe: 9:30 AM to 10:30 AM EST. The only hour in which trades are taken. Outside The Window, there is no trade.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Current</div><div class="gloss-also">Unique — Also: HTF Bias</div></div><div class="gloss-def">The directional flow established by the higher timeframes (Daily, 4H). All trades must align with The Current. Fighting it is the fastest way to lose money.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Flush</div><div class="gloss-also">Unique — Also: Liquidity Sweep / Stop Hunt</div></div><div class="gloss-def">The engineered move where price spikes through a key liquidity level, collects the orders there, and closes back on the other side. The central event of the entire strategy.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Foundation Range</div><div class="gloss-also">Unique — Also: Asia Range</div></div><div class="gloss-def">The price range established during the Asia session (midnight–6:00 AM EST). The high and low are prime liquidity targets for London and NY.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Magnetic Target</div><div class="gloss-also">Unique — Also: Draw on Liquidity (DOL)</div></div><div class="gloss-def">The nearest, most obvious liquidity pool that price is drawn toward in the direction of The Current. Your primary take-profit level. Must be identifiable before entering.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Full Stack</div><div class="gloss-also">Unique to this system</div></div><div class="gloss-def">The complete confluence of all four entry conditions: The Current + The Flush + BOS/Inversion FVG + Magnetic Target. Only trade at full size when all four are present.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Clean Flush</div><div class="gloss-also">Unique to this system</div></div><div class="gloss-def">A Full Stack setup that also has a confirmed Split Signal. The highest-quality setup in the system. Trade with maximum conviction and full size.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Split Signal</div><div class="gloss-also">Unique — Also: SMT Divergence (ICT)</div></div><div class="gloss-def">Divergence between NQ and ES at a liquidity level. One instrument makes a new high/low while the other fails to confirm. Signals the move is engineered and reversal is imminent.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Dead Water</div><div class="gloss-also">Unique to this system</div></div><div class="gloss-def">A session where The Current is unclear, no valid Flush develops, or no Magnetic Target is identifiable. No trade is the correct decision on Dead Water days.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">The Read</div><div class="gloss-also">Unique to this system</div></div><div class="gloss-def">The 15–20 minute pre-market preparation ritual performed every morning before 9:00 AM. Marking all key levels, determining The Current, identifying the Magnetic Target.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Fair Value Gap (FVG)</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">A three-candle imbalance where the middle candle moves so strongly that a gap is created between the wick of candle 1 and the wick of candle 3. Price tends to return and fill these areas.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Inversion FVG</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">An FVG that has been violated and now acts as opposite-side support/resistance. A primary entry zone in this system — forms after The Flush in the area of the sweep.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Order Block (OB)</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">The last opposing candle before a significant impulse move. Where institutional orders were placed. High-probability support/resistance when price returns.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Break of Structure (BOS)</div><div class="gloss-also">Standard ICT / SMC Terminology</div></div><div class="gloss-def">Price moves through and closes beyond a significant swing point in the direction of the current trend. Confirms trend continuation. On LTF after The Flush, one of our primary entry confirmation signals.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Change of Character (CHOCH)</div><div class="gloss-also">Standard ICT / SMC Terminology</div></div><div class="gloss-def">The first break of structure against the current trend — the initial reversal signal. Combined with The Flush, a valid LTF entry signal.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">BSL / SSL</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">Buy-Side Liquidity (above highs) and Sell-Side Liquidity (below lows). Pools of stops and pending orders that the market engineers moves to collect.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Premium / Discount</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">Premium: above the 50% midpoint of a price range — expensive, sell in bearish context. Discount: below 50% — cheap, buy in bullish context. Entering in the correct zone dramatically improves R:R.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">NWOG</div><div class="gloss-also">Standard ICT — New Week Opening Gap</div></div><div class="gloss-def">Gap between Friday's close and Sunday's open on futures. Acts as a weekly Magnetic Target — very strong tendency to be filled during the week.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">Optimal Trade Entry (OTE)</div><div class="gloss-also">Standard ICT Terminology</div></div><div class="gloss-def">The Fibonacci 61.8%–79% retracement zone of a post-flush impulse move. The highest probability retracement entry level. When your inversion FVG sits within the OTE, the entry quality is exceptional.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">PDH / PDL</div><div class="gloss-also">Standard Trading Terminology</div></div><div class="gloss-def">Previous Day High and Previous Day Low. The most universally watched levels in indices. Tier 1 Flush targets at the NY open.</div></div>
+  <div class="gloss-item"><div><div class="gloss-term">R:R / R Multiple</div><div class="gloss-also">Standard Trading Terminology</div></div><div class="gloss-def">Risk-to-Reward ratio. A 3:1 R:R: for every $1 risked, the target is $3 profit. +2R means you made 2× your risk. -1R means you lost your full risk amount.</div></div>
+</div>
+
+<div class="footer">
+  <span>The Window — NY Open Trading System</span>
+  <span>Confidential Mentorship Material — v2.0</span>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+// ── PARTICLE SYSTEM ──
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.life = Math.random();
+      this.maxLife = 0.4 + Math.random() * 0.6;
+      this.r = Math.random() * 1.5;
+      this.gold = Math.random() > 0.7;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.life -= 0.002;
+      if (this.life <= 0 || this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      const a = Math.min(this.life / this.maxLife, 1) * 0.4;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.gold ? `rgba(200,168,75,${a})` : `rgba(255,255,255,${a * 0.3})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  // Draw connecting lines between nearby particles
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 80) {
+          const a = (1 - dist/80) * 0.06;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(200,168,75,${a})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawLines();
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.page').forEach(p => observer.observe(p));
+
+// ── LIVE TICKER UPDATE (simulated market data) ──
+(function() {
+  const tickers = [
+    { sym: 'NQ', base: 21450, vol: 80 },
+    { sym: 'ES', base: 5890, vol: 15 },
+    { sym: 'MNQ', base: 21450, vol: 80 },
+  ];
+  setInterval(() => {
+    document.querySelectorAll('.ticker-item').forEach(el => {
+      if (el.textContent.includes('NQ') || el.textContent.includes('ES')) {
+        const t = tickers[Math.floor(Math.random() * tickers.length)];
+        const change = (Math.random() - 0.48) * t.vol;
+        const pct = (change / t.base * 100).toFixed(2);
+        const dir = change >= 0;
+        el.textContent = `${t.sym} ${dir ? '▲' : '▼'} ${dir ? '+' : ''}${pct}%`;
+        el.className = 'ticker-item ' + (dir ? 'up' : 'down');
+      }
+    });
+  }, 3000);
+})();
+
+// ── CHAPTER PROGRESS BARS ──
+document.querySelectorAll('.ch-header').forEach((header, i) => {
+  const bar = document.createElement('div');
+  bar.className = 'ch-progress';
+  bar.style.width = ((i + 1) / 10 * 100) + '%';
+  header.parentNode.insertBefore(bar, header);
+});
+
+// ── CHART ANIMATION — fade in on scroll ──
+document.querySelectorAll('.chart-example').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+  const io = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+      io.disconnect();
+    }
+  }, { threshold: 0.05 });
+  io.observe(el);
+});
+
+console.log('%c THE WINDOW — Trading System Loaded ', 'background:#C8A84B;color:#000;font-family:monospace;font-size:14px;padding:8px 16px;font-weight:bold;');
+}); // end load
+</script>
+
+</body>
+</html>
